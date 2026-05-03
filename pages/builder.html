@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Builder — AshuValz</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/builder.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">Ashu<span>Valz</span></a>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="builder.html" class="active">Builder</a>
+      <a href="showcase.html">Showcase</a>
+    </div>
+    <button class="nav-cta" id="exportBtn" data-format="png">Download Portfolio</button>
+  </nav>
+
+  <div class="builder-layout">
+
+    <!-- LEFT PANEL: FILTERS -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">SELECT WEAPON</div>
+        <div class="weapon-tabs" id="weaponTabs">
+          <button class="weapon-tab active" data-weapon="all">All</button>
+          <div class="weapon-category-title">Pistols</div>
+          <button class="weapon-tab" data-weapon="classic">Classic</button>
+          <button class="weapon-tab" data-weapon="shorty">Shorty</button>
+          <button class="weapon-tab" data-weapon="frenzy">Frenzy</button>
+          <button class="weapon-tab" data-weapon="ghost">Ghost</button>
+          <button class="weapon-tab" data-weapon="sheriff">Sheriff</button>
+          <button class="weapon-tab" data-weapon="bandit">Bandit</button>
+          <div class="weapon-category-title">SMG</div>
+          <button class="weapon-tab" data-weapon="stinger">Stinger</button>
+          <button class="weapon-tab" data-weapon="spectre">Spectre</button>
+          <div class="weapon-category-title">Shotgun</div>
+          <button class="weapon-tab" data-weapon="bucky">Bucky</button>
+          <button class="weapon-tab" data-weapon="judge">Judge</button>
+          <div class="weapon-category-title">Rifles</div>
+          <button class="weapon-tab" data-weapon="bulldog">Bulldog</button>
+          <button class="weapon-tab" data-weapon="guardian">Guardian</button>
+          <button class="weapon-tab" data-weapon="phantom">Phantom</button>
+          <button class="weapon-tab" data-weapon="vandal">Vandal</button>
+          <div class="weapon-category-title">Sniper Rifle</div>
+          <button class="weapon-tab" data-weapon="marshal">Marshal</button>
+          <button class="weapon-tab" data-weapon="outlaw">Outlaw</button>
+          <button class="weapon-tab" data-weapon="operator">Operator</button>
+          <div class="weapon-category-title">Machine Gun</div>
+          <button class="weapon-tab" data-weapon="ares">Ares</button>
+          <button class="weapon-tab" data-weapon="odin">Odin</button>
+          <div class="weapon-category-title">Knife</div>
+          <button class="weapon-tab" data-weapon="knife">Knife</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">FILTER BY TIER</div>
+        <select class="tier-select" id="tierSelect">
+          <option value="all">All Tiers</option>
+          <option value="standard">Standard</option>
+          <option value="select">Select Edition</option>
+          <option value="deluxe">Deluxe Edition</option>
+          <option value="premium">Premium Edition</option>
+          <option value="exclusive">Exclusive Edition</option>
+          <option value="ultra">Ultra Edition</option>
+        </select>
+        <div class="tier-helper">Weapons sort by matching skin count.</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">MY LOADOUT</div>
+        <div id="loadoutSummary" class="loadout-summary">
+          <div class="loadout-empty">No skins selected yet.<br>Click a skin to add it.</div>
+        </div>
+        <button class="clear-btn" id="clearBtn">Clear All</button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">PORTFOLIO INFO</div>
+        <input type="text" id="playerName" placeholder="Your IGN (e.g. TenZ#000)" class="sidebar-input"/>
+        <div class="rank-input-wrap" id="rankInputWrap">
+          <img class="rank-selected-icon hidden" id="rankSelectedIcon" src="" alt="Selected rank"/>
+          <input type="text" id="playerRank" placeholder="Your Rank" class="sidebar-input rank-input" readonly/>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN: SKIN GRID -->
+    <main class="skin-main">
+      <div class="main-header">
+        <div>
+          <div class="main-weapon-label" id="currentWeaponLabel">ALL SKINS</div>
+          <div class="main-count" id="skinCount">Loading skins...</div>
+        </div>
+        <div class="search-wrap">
+          <input type="text" id="skinSearch" placeholder="Search skin..." class="search-input"/>
+        </div>
+      </div>
+
+      <div class="skin-grid" id="skinGrid">
+        <!-- Skins injected by JS -->
+      </div>
+    </main>
+
+    <!-- RIGHT: PORTFOLIO PREVIEW -->
+    <aside class="preview-panel">
+      <div class="sidebar-label">PORTFOLIO PREVIEW</div>
+      <div class="portfolio-card" id="portfolioCard">
+        <div class="pc-header">
+          <div class="pc-title">AshuValz</div>
+          <div class="pc-player" id="pcPlayer">YOUR IGN</div>
+          <div class="pc-rank" id="pcRank">Rank</div>
+        </div>
+        <div class="pc-skins" id="pcSkins">
+          <div class="pc-empty">Select skins to preview your portfolio card</div>
+        </div>
+        <div class="pc-footer">
+          <span class="pc-brand">ashuvalz.gg</span>
+          <span class="pc-count" id="pcCount">0 skins</span>
+        </div>
+      </div>
+      <div class="export-actions">
+        <button class="btn-primary export-full" id="downloadPortfolioBtn" data-format="png">Download Portfolio</button>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="rarity-modal hidden" id="rarityModal" aria-hidden="true">
+    <div class="rarity-backdrop" id="rarityBackdrop"></div>
+    <div class="rarity-panel" role="dialog" aria-modal="true" aria-labelledby="rarityTitle">
+      <button class="rarity-close" id="rarityClose" type="button" aria-label="Close rarity popup">×</button>
+      <div class="sidebar-label">SELECT RARITY</div>
+      <div class="rarity-weapon">
+        <img class="rarity-weapon-icon" id="rarityWeaponIcon" src="" alt=""/>
+        <div>
+          <div class="rarity-title" id="rarityTitle">CLASSIC</div>
+          <div class="rarity-subtitle">Pick an edition to browse skins</div>
+        </div>
+      </div>
+      <div class="rarity-grid" id="rarityGrid"></div>
+    </div>
+  </div>
+
+  <div class="rank-modal hidden" id="rankModal" aria-hidden="true">
+    <div class="rank-backdrop" id="rankBackdrop"></div>
+    <div class="rank-panel" role="dialog" aria-modal="true" aria-labelledby="rankTitle">
+      <button class="rarity-close" id="rankClose" type="button" aria-label="Close rank popup">×</button>
+      <div class="sidebar-label">SELECT RANK</div>
+      <div class="rank-title" id="rankTitle">Your Rank</div>
+      <div class="rank-grid" id="rankGrid"></div>
+      <div class="rank-detail hidden" id="rankDetail"></div>
+    </div>
+  </div>
+
+  <!-- SUBSCRIBE GATE -->
+  <div class="sub-gate hidden" id="subGate" aria-hidden="true">
+    <div class="sub-gate-backdrop" id="subGateBackdrop"></div>
+    <div class="sub-gate-panel" role="dialog" aria-modal="true" aria-labelledby="subGateTitle">
+      <button class="rarity-close" id="subGateClose" type="button" aria-label="Close">×</button>
+      <div class="sub-gate-badge">PORTFOLIO LOCKED</div>
+      <h2 class="sub-gate-title" id="subGateTitle">One Step to <span>Unlock</span></h2>
+      <p class="sub-gate-sub">Subscribe to <strong>AshuValz</strong> on YouTube to unlock unlimited portfolio downloads. Takes 5 seconds — supports the project.</p>
+
+      <div class="sub-gate-steps">
+        <div class="sub-gate-step" data-step="1">
+          <div class="sub-gate-step-num">01</div>
+          <div class="sub-gate-step-body">
+            <div class="sub-gate-step-title">Open the channel</div>
+            <div class="sub-gate-step-desc">Hit subscribe (and the bell, if you're feeling generous).</div>
+          </div>
+          <a href="https://www.youtube.com/@AshuValz?sub_confirmation=1" target="_blank" rel="noopener" class="sub-gate-btn primary" id="subGateOpenBtn">Subscribe →</a>
+        </div>
+        <div class="sub-gate-step" data-step="2">
+          <div class="sub-gate-step-num">02</div>
+          <div class="sub-gate-step-body">
+            <div class="sub-gate-step-title">Unlock your portfolio</div>
+            <div class="sub-gate-step-desc">Confirm below — this saves so you never see this again.</div>
+          </div>
+          <button type="button" class="sub-gate-btn ghost" id="subGateConfirmBtn" disabled>I Subscribed — Unlock</button>
+        </div>
+      </div>
+
+      <div class="sub-gate-foot">No login required. Honor system — but please actually subscribe ♡</div>
+    </div>
+  </div>
+
+  <script src="../js/skins-data.js"></script>
+  <script src="../js/builder.js"></script>
+</body>
+</html>

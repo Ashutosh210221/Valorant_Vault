@@ -1,0 +1,145 @@
+/* =============================================
+   AshuValz — Showcase Page Styles
+   ============================================= */
+
+.showcase-page {
+  padding: 100px 80px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.showcase-header {
+  margin-bottom: 60px;
+}
+
+.showcase-sub {
+  font-size: 1.05rem;
+  color: var(--grey-light);
+  max-width: 500px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 28px;
+  margin-bottom: 80px;
+}
+
+/* EXAMPLE PORTFOLIO CARD */
+.example-portfolio {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.example-portfolio:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.ep-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ep-purple { border-top: 3px solid #8B2FC9; background: linear-gradient(135deg, rgba(139,47,201,0.15) 0%, transparent 60%); }
+.ep-red { border-top: 3px solid #FF4655; background: linear-gradient(135deg, rgba(255,70,85,0.15) 0%, transparent 60%); }
+.ep-gold { border-top: 3px solid #C8A951; background: linear-gradient(135deg, rgba(200,169,81,0.15) 0%, transparent 60%); }
+
+.ep-logo { font-family: var(--font-display); font-size: 0.9rem; color: var(--red); letter-spacing: 0.15em; margin-bottom: 8px; }
+.ep-player { font-family: var(--font-body); font-weight: 700; font-size: 1.3rem; }
+.ep-rank { font-family: var(--font-mono); font-size: 0.7rem; color: var(--grey); letter-spacing: 0.1em; margin-top: 4px; }
+
+.ep-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--grey);
+  letter-spacing: 0.2em;
+  padding: 12px 24px 8px;
+}
+
+.ep-skins { padding: 0 16px 8px; display: flex; flex-direction: column; gap: 4px; }
+
+.ep-skin {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--c, var(--red));
+  background: rgba(255,255,255,0.02);
+  transition: background 0.2s;
+}
+.ep-skin:hover { background: rgba(255,255,255,0.05); }
+
+.ep-emoji { font-size: 1.3rem; flex-shrink: 0; }
+.ep-skin-name { font-family: var(--font-body); font-weight: 700; font-size: 0.95rem; }
+.ep-skin-bundle { font-family: var(--font-mono); font-size: 0.62rem; color: var(--grey); letter-spacing: 0.1em; margin-top: 2px; }
+
+.ep-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 8px;
+}
+.ep-brand { font-family: var(--font-mono); font-size: 0.65rem; color: var(--red); }
+.ep-count { font-family: var(--font-mono); font-size: 0.65rem; color: var(--grey); }
+
+/* SHOWCASE CTA */
+.showcase-cta {
+  text-align: center;
+  padding: 80px 40px;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.showcase-cta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 1px;
+  background: var(--red);
+}
+
+@media (max-width: 900px) {
+  .showcase-page { padding: 80px 24px 40px; }
+  .example-grid { grid-template-columns: 1fr; }
+}
+
+.showcase-page {
+  padding-top: 130px;
+}
+
+.showcase-header {
+  background: rgba(17,17,24,0.58);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 34px;
+  box-shadow: 0 18px 55px rgba(0,0,0,0.22);
+}
+
+.example-grid {
+  gap: 22px;
+}
+
+.example-portfolio {
+  border-color: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.018));
+  box-shadow: 0 18px 55px rgba(0,0,0,0.24);
+}
+
+.ep-header {
+  border-radius: 24px 24px 0 0;
+}
+
+.ep-skin {
+  border-radius: 14px;
+}
+
+.showcase-cta {
+  background: rgba(17,17,24,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+}
