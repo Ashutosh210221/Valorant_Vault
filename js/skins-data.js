@@ -2304,6 +2304,14 @@ const SKINS_DATA = {
   ],
   "ghost": [
     {
+      "id": "ghost-kuronami-ghost-431799d6",
+      "name": "Kuronami Ghost",
+      "bundle": "Kuronami",
+      "tier": "exclusive",
+      "accent": "#FF8C00",
+      "img": "https://media.valorant-api.com/weaponskinchromas/704ce0e7-4922-4716-df78-b081db8fd336/fullrender.png"
+    },
+    {
       "id": "ghost-standard-ghost-1c63b43b",
       "name": "Standard Ghost",
       "bundle": "Standard",
@@ -5536,6 +5544,14 @@ const SKINS_DATA = {
   ],
   "guardian": [
     {
+      "id": "guardian-kuronami-guardian-cf3ccc67",
+      "name": "Kuronami Guardian",
+      "bundle": "Kuronami",
+      "tier": "exclusive",
+      "accent": "#FF8C00",
+      "img": "https://media.valorant-api.com/weaponskinchromas/0616111d-4827-5aa6-5629-7884a8819ece/fullrender.png"
+    },
+    {
       "id": "guardian-standard-guardian-3bf1e8e0",
       "name": "Standard Guardian",
       "bundle": "Standard",
@@ -6033,6 +6049,14 @@ const SKINS_DATA = {
     }
   ],
   "phantom": [
+    {
+      "id": "phantom-kuronami-phantom-3f6410af",
+      "name": "Kuronami Phantom",
+      "bundle": "Kuronami",
+      "tier": "exclusive",
+      "accent": "#FF8C00",
+      "img": "https://media.valorant-api.com/weaponskinchromas/cb1ad7ed-4f7d-3708-08db-6e9137ba4ca8/fullrender.png"
+    },
     {
       "id": "phantom-standard-phantom-337cb216",
       "name": "Standard Phantom",
@@ -8170,6 +8194,14 @@ const SKINS_DATA = {
   ],
   "operator": [
     {
+      "id": "operator-kuronami-operator-a709ad22",
+      "name": "Kuronami Operator",
+      "bundle": "Kuronami",
+      "tier": "exclusive",
+      "accent": "#FF8C00",
+      "img": "https://media.valorant-api.com/weaponskinchromas/2ed7173c-4fd9-46e9-20b2-7797875fe4b5/fullrender.png"
+    },
+    {
       "id": "operator-standard-operator-d1f2920f",
       "name": "Standard Operator",
       "bundle": "Standard",
@@ -9271,6 +9303,14 @@ const SKINS_DATA = {
     }
   ],
   "knife": [
+    {
+      "id": "knife-kuronami-naru-kami-d0873346",
+      "name": "Kuronami Naru-Kami",
+      "bundle": "Kuronami",
+      "tier": "exclusive",
+      "accent": "#FF8C00",
+      "img": "https://media.valorant-api.com/weaponskinchromas/4fb8aaea-434f-03e6-8757-808de73c0d48/fullrender.png"
+    },
     {
       "id": "knife-standard-knife-12cc9ed2",
       "name": "Standard Knife",

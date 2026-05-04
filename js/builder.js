@@ -71,14 +71,14 @@ const WEAPON_ICONS = {
 };
 
 const WEAPON_ORDER = [
-  'classic', 'shorty', 'frenzy', 'ghost', 'sheriff', 'bandit',
+  'classic', 'shorty', 'frenzy', 'ghost', 'bandit', 'sheriff',
   'stinger', 'spectre', 'bucky', 'judge', 'bulldog', 'guardian',
   'phantom', 'vandal', 'marshal', 'outlaw', 'operator', 'ares',
   'odin', 'knife'
 ];
 
 const WEAPON_CATEGORIES = [
-  { title: 'Pistols', weapons: ['classic', 'shorty', 'frenzy', 'ghost', 'sheriff', 'bandit'] },
+  { title: 'Pistols', weapons: ['classic', 'shorty', 'frenzy', 'ghost', 'bandit', 'sheriff'] },
   { title: 'SMG', weapons: ['stinger', 'spectre'] },
   { title: 'Shotgun', weapons: ['bucky', 'judge'] },
   { title: 'Rifles', weapons: ['bulldog', 'guardian', 'phantom', 'vandal'] },
@@ -86,6 +86,16 @@ const WEAPON_CATEGORIES = [
   { title: 'Machine Gun', weapons: ['ares', 'odin'] },
   { title: 'Knife', weapons: ['knife'] }
 ];
+
+const WEAPON_RANK = WEAPON_ORDER.reduce((acc, w, i) => (acc[w] = i, acc), {});
+
+function sortByWeaponOrder(skins) {
+  return [...skins].sort((a, b) => {
+    const ra = WEAPON_RANK[a.weapon] ?? 999;
+    const rb = WEAPON_RANK[b.weapon] ?? 999;
+    return ra - rb;
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   bindEvents();
@@ -97,7 +107,9 @@ function bindEvents() {
   document.querySelectorAll('.weapon-tab').forEach(btn => {
     btn.dataset.label = btn.textContent.trim();
     btn.addEventListener('click', () => {
-      currentWeapon = btn.dataset.weapon;
+      const clicked = btn.dataset.weapon;
+      // Click the same tab again to deselect (back to "All").
+      currentWeapon = (currentWeapon === clicked && clicked !== 'all') ? 'all' : clicked;
       syncActiveWeaponButton();
       updateCurrentWeaponLabel();
       renderSkins();
@@ -119,6 +131,7 @@ function bindEvents() {
     if (e.key === 'Escape') {
       closeRarityModal();
       closeRankModal();
+      closeFeedbackGate();
     }
   });
 
@@ -132,6 +145,7 @@ function bindEvents() {
     renderSkins();
     updateLoadout();
     updatePreviewCard();
+    updateSelectedTabBadge();
   });
 
   document.getElementById('playerName').addEventListener('input', updatePreviewCard);
@@ -140,99 +154,337 @@ function bindEvents() {
   document.getElementById('rankBackdrop')?.addEventListener('click', closeRankModal);
 
   document.getElementById('downloadPortfolioBtn')?.addEventListener('click', requestExport);
-  document.getElementById('exportBtn')?.addEventListener('click', requestExport);
+  document.getElementById('savePortfolioBtn')?.addEventListener('click', savePortfolio);
+  document.getElementById('loadPortfolioBtn')?.addEventListener('click', loadPortfolio);
 
-  initSubscribeGate();
+  initFeedbackGate();
+  initAccountActions();
 }
 
-const SUB_GATE_STORAGE_KEY = 'ashuvalz.subscribed';
-const SUB_GATE_OPEN_DELAY_MS = 1500;
-let pendingExportEvent = null;
-let subGateOpenedAt = 0;
+function initAccountActions() {
+  const refresh = () => {
+    const loggedIn = Boolean(window.AshuAuth && window.AshuAuth.user);
+    const saveBtn = document.getElementById('savePortfolioBtn');
+    const loadBtn = document.getElementById('loadPortfolioBtn');
+    [saveBtn, loadBtn].forEach(btn => {
+      if (!btn) return;
+      btn.title = loggedIn ? '' : 'Login to use this';
+    });
+  };
 
-function isUnlocked() {
-  try { return localStorage.getItem(SUB_GATE_STORAGE_KEY) === '1'; }
+  refresh();
+  window.AshuAuth?.onChange?.(refresh);
+}
+
+async function savePortfolio() {
+  const auth = window.AshuAuth;
+  if (!auth || !auth.user || !auth.client) {
+    alert('Please login first to save your portfolio.');
+    return;
+  }
+  const skins = Object.values(selectedSkins);
+  if (skins.length === 0) {
+    alert('Pick at least one skin before saving.');
+    return;
+  }
+
+  const ign = document.getElementById('playerName')?.value || '';
+  const rank = document.getElementById('playerRank')?.value || '';
+  const btn = document.getElementById('savePortfolioBtn');
+  const original = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  try {
+    const { error } = await auth.client
+      .from('portfolios')
+      .upsert({
+        user_id: auth.user.id,
+        name: 'My Loadout',
+        data: { skins: Object.keys(selectedSkins), ign, rank },
+        updated_at: new Date().toISOString()
+      });
+    if (error) throw error;
+    if (btn) btn.textContent = 'Saved!';
+    setTimeout(() => { if (btn) btn.textContent = original; }, 1500);
+  } catch (err) {
+    alert('Save failed: ' + (err.message || 'Unknown error'));
+    if (btn) btn.textContent = original;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function loadPortfolio() {
+  const auth = window.AshuAuth;
+  if (!auth || !auth.user || !auth.client) {
+    alert('Please login first to load your saved portfolio.');
+    return;
+  }
+  const btn = document.getElementById('loadPortfolioBtn');
+  const original = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
+
+  try {
+    const { data, error } = await auth.client
+      .from('portfolios')
+      .select('*')
+      .eq('user_id', auth.user.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
+      alert('No saved portfolio yet. Pick some skins and hit Save first.');
+      return;
+    }
+
+    const skinIds = (data.data && data.data.skins) || [];
+    const ign = (data.data && data.data.ign) || '';
+    const rank = (data.data && data.data.rank) || '';
+
+    selectedSkins = {};
+    skinIds.forEach(id => {
+      const skin = findSkinById(id);
+      if (skin) selectedSkins[skin.id] = skin;
+    });
+
+    const playerNameEl = document.getElementById('playerName');
+    const playerRankEl = document.getElementById('playerRank');
+    if (playerNameEl) playerNameEl.value = ign;
+    if (playerRankEl) playerRankEl.value = rank;
+    if (rank) updateSelectedRankIcon(rank);
+
+    renderSkins();
+    updateLoadout();
+    updatePreviewCard();
+    updateSelectedTabBadge();
+
+    if (btn) btn.textContent = 'Loaded!';
+    setTimeout(() => { if (btn) btn.textContent = original; }, 1500);
+  } catch (err) {
+    alert('Load failed: ' + (err.message || 'Unknown error'));
+    if (btn) btn.textContent = original;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function findSkinById(id) {
+  for (const weapon of WEAPON_ORDER) {
+    const list = SKINS_DATA[weapon] || [];
+    const found = list.find(s => s.id === id);
+    if (found) return { ...found, weapon: found.weapon || weapon };
+  }
+  return null;
+}
+
+function recordDownloadEvent(skins, ign, rank) {
+  const auth = window.AshuAuth;
+  if (!auth || !auth.user || !auth.client) return;
+  auth.client
+    .from('download_events')
+    .insert({
+      user_id: auth.user.id,
+      skin_count: skins.length,
+      ign: ign || null,
+      rank: rank || null
+    })
+    .then(({ error }) => {
+      if (error) console.warn('Download log failed:', error.message);
+    });
+}
+
+const FEEDBACK_COUNTS_STORAGE_KEY = 'ashuvalz.feedbackCounts';
+const FEEDBACK_VOTED_STORAGE_KEY = 'ashuvalz.feedbackVoted';
+let pendingExportEvent = null;
+let feedbackVoteSubmitted = false;
+
+function hasAlreadyVoted() {
+  try { return Boolean(localStorage.getItem(FEEDBACK_VOTED_STORAGE_KEY)); }
   catch { return false; }
 }
 
-function markUnlocked() {
-  try { localStorage.setItem(SUB_GATE_STORAGE_KEY, '1'); } catch {}
+function markVoted(vote) {
+  try { localStorage.setItem(FEEDBACK_VOTED_STORAGE_KEY, vote); } catch {}
+  window.dispatchEvent(new CustomEvent('ashuvalz:vote-cast'));
 }
 
 function requestExport(e) {
-  if (isUnlocked()) {
-    exportCard(e);
-    return;
-  }
   const skins = Object.values(selectedSkins);
   if (skins.length === 0) {
     alert('Select at least one skin before exporting!');
     return;
   }
+
+  // One vote per browser. Returning users skip the gate and download directly.
+  if (hasAlreadyVoted()) {
+    exportCard(e);
+    return;
+  }
+
   pendingExportEvent = { currentTarget: e?.currentTarget || null };
-  openSubGate();
+  openFeedbackGate();
 }
 
-function initSubscribeGate() {
-  const closeBtn = document.getElementById('subGateClose');
-  const backdrop = document.getElementById('subGateBackdrop');
-  const openBtn = document.getElementById('subGateOpenBtn');
-  const confirmBtn = document.getElementById('subGateConfirmBtn');
+function initFeedbackGate() {
+  const closeBtn = document.getElementById('feedbackGateClose');
+  const backdrop = document.getElementById('feedbackGateBackdrop');
+  const downloadBtn = document.getElementById('feedbackDownloadBtn');
 
-  closeBtn?.addEventListener('click', closeSubGate);
-  backdrop?.addEventListener('click', closeSubGate);
+  closeBtn?.addEventListener('click', closeFeedbackGate);
+  backdrop?.addEventListener('click', closeFeedbackGate);
 
-  openBtn?.addEventListener('click', () => {
-    subGateOpenedAt = Date.now();
-    if (confirmBtn) {
-      confirmBtn.disabled = true;
-      confirmBtn.textContent = 'Confirming subscribe...';
-      setTimeout(() => {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = 'I Subscribed — Unlock';
-      }, SUB_GATE_OPEN_DELAY_MS);
-    }
+  document.querySelectorAll('[data-feedback-vote]').forEach(btn => {
+    btn.addEventListener('click', () => handleFeedbackVote(btn.dataset.feedbackVote));
   });
 
-  confirmBtn?.addEventListener('click', () => {
-    if (subGateOpenedAt === 0 || Date.now() - subGateOpenedAt < SUB_GATE_OPEN_DELAY_MS) {
-      return;
-    }
-    markUnlocked();
-    closeSubGate();
-    if (pendingExportEvent) {
-      const evt = pendingExportEvent;
-      pendingExportEvent = null;
-      exportCard(evt);
-    }
+  downloadBtn?.addEventListener('click', () => {
+    if (!pendingExportEvent) return;
+    const evt = pendingExportEvent;
+    pendingExportEvent = null;
+    closeFeedbackGate();
+    exportCard(evt);
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeSubGate();
+    if (e.key === 'Escape') closeFeedbackGate();
   });
 }
 
-function openSubGate() {
-  const gate = document.getElementById('subGate');
+function openFeedbackGate() {
+  const gate = document.getElementById('feedbackGate');
   if (!gate) return;
+
   gate.classList.remove('hidden');
   gate.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
-  subGateOpenedAt = 0;
-  const confirmBtn = document.getElementById('subGateConfirmBtn');
-  if (confirmBtn) {
-    confirmBtn.disabled = true;
-    confirmBtn.textContent = 'I Subscribed — Unlock';
+  feedbackVoteSubmitted = false;
+  renderFeedbackCounts(false);
+  resetFeedbackReaction();
+}
+
+async function fetchRemoteFeedbackTotals() {
+  const auth = window.AshuAuth;
+  if (!auth || !auth.client) return null;
+  try {
+    const { data, error } = await auth.client.rpc('get_feedback_totals');
+    if (error || !data || !data.length) return null;
+    return {
+      up: Number(data[0].up_count) || 0,
+      down: Number(data[0].down_count) || 0
+    };
+  } catch {
+    return null;
   }
 }
 
-function closeSubGate() {
-  const gate = document.getElementById('subGate');
+function closeFeedbackGate() {
+  const gate = document.getElementById('feedbackGate');
   if (!gate) return;
+
   gate.classList.add('hidden');
   gate.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   pendingExportEvent = null;
+}
+
+async function handleFeedbackVote(vote) {
+  if (feedbackVoteSubmitted || !['up', 'down'].includes(vote)) return;
+
+  feedbackVoteSubmitted = true;
+
+  // Optimistic local bump so the UI feels instant even if the network is slow.
+  const counts = getFeedbackCounts();
+  counts[vote] += 1;
+  saveFeedbackCounts(counts);
+
+  // Server-side increment via the public RPC — works for anonymous users too.
+  const auth = window.AshuAuth;
+  if (auth && auth.client) {
+    try {
+      const { data, error } = await auth.client.rpc('cast_feedback_vote', { p_vote: vote });
+      if (!error && data && data.length) {
+        saveFeedbackCounts({
+          up: Number(data[0].up_count) || 0,
+          down: Number(data[0].down_count) || 0
+        });
+      }
+    } catch (err) {
+      console.warn('Vote save failed:', err);
+    }
+  }
+
+  markVoted(vote);
+  await renderFeedbackCounts(true);
+  showFeedbackReaction(vote);
+}
+
+function getFeedbackCounts() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FEEDBACK_COUNTS_STORAGE_KEY) || '{}');
+    return {
+      up: Number(saved.up) || 0,
+      down: Number(saved.down) || 0
+    };
+  } catch {
+    return { up: 0, down: 0 };
+  }
+}
+
+function saveFeedbackCounts(counts) {
+  try {
+    localStorage.setItem(FEEDBACK_COUNTS_STORAGE_KEY, JSON.stringify(counts));
+  } catch {}
+}
+
+async function renderFeedbackCounts(reveal) {
+  let counts = getFeedbackCounts();
+  const remote = await fetchRemoteFeedbackTotals();
+  if (remote) counts = remote;
+
+  const upCount = document.getElementById('feedbackUpCount');
+  const downCount = document.getElementById('feedbackDownCount');
+
+  if (upCount) {
+    upCount.textContent = counts.up;
+    upCount.classList.toggle('hidden', !reveal);
+  }
+  if (downCount) {
+    downCount.textContent = counts.down;
+    downCount.classList.toggle('hidden', !reveal);
+  }
+}
+
+function resetFeedbackReaction() {
+  document.getElementById('feedbackReaction')?.classList.add('hidden');
+  document.querySelectorAll('[data-feedback-vote]').forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('selected');
+  });
+}
+
+function showFeedbackReaction(vote) {
+  const reaction = document.getElementById('feedbackReaction');
+  const sticker = document.getElementById('feedbackSticker');
+  const title = document.getElementById('feedbackReactionTitle');
+  const message = document.getElementById('feedbackReactionMessage');
+
+  document.querySelectorAll('[data-feedback-vote]').forEach(btn => {
+    btn.disabled = true;
+    btn.classList.toggle('selected', btn.dataset.feedbackVote === vote);
+  });
+
+  if (vote === 'up') {
+    if (sticker) sticker.textContent = '🥰';
+    if (title) title.textContent = 'Thank you!';
+    if (message) message.textContent = 'Love from Ashu';
+  } else {
+    if (sticker) sticker.textContent = '💔';
+    if (title) title.textContent = 'Aww, we will do better';
+    if (message) message.textContent = 'Still love from Ashu';
+  }
+
+  reaction?.classList.remove('hidden');
+  reaction?.classList.remove('up', 'down');
+  reaction?.classList.add(vote);
 }
 
 function openRarityModal(weapon) {
@@ -426,6 +678,14 @@ function getWeaponSkins(weapon) {
     return WEAPON_ORDER.flatMap(key => getWeaponSkins(key));
   }
 
+  if (weapon === 'selected') {
+    const skins = Object.values(selectedSkins).map(skin => ({
+      ...skin,
+      weapon: skin.weapon || ''
+    }));
+    return sortByWeaponOrder(skins);
+  }
+
   return (SKINS_DATA[weapon] || []).map(skin => ({
     ...skin,
     weapon: skin.weapon || weapon
@@ -450,7 +710,9 @@ function syncActiveWeaponButton() {
 
 function updateCurrentWeaponLabel() {
   const tierText = currentTier === 'all' ? '' : `${TIER_LABELS[currentTier] || currentTier.toUpperCase()} `;
-  const weaponText = currentWeapon === 'all' ? 'ALL' : currentWeapon.toUpperCase();
+  const weaponText = currentWeapon === 'all' ? 'ALL'
+    : currentWeapon === 'selected' ? 'YOUR SELECTED'
+    : currentWeapon.toUpperCase();
   document.getElementById('currentWeaponLabel').textContent = `${weaponText} ${tierText}SKINS`;
 }
 
@@ -460,19 +722,50 @@ function updateWeaponTabsForTier() {
 
   const tabs = Array.from(container.querySelectorAll('.weapon-tab'));
   const tabByWeapon = new Map(tabs.map(tab => [tab.dataset.weapon, tab]));
+
+  // Remember which categories were already expanded so the rebuild
+  // doesn't collapse the user's open section out from under them.
+  const previouslyExpanded = new Set(
+    Array.from(container.querySelectorAll('.weapon-category.expanded'))
+      .map(el => el.dataset.category)
+  );
+
   container.innerHTML = '';
 
   appendWeaponTab(container, tabByWeapon.get('all'));
+  appendWeaponTab(container, tabByWeapon.get('selected'));
 
   WEAPON_CATEGORIES.forEach(category => {
-    const title = document.createElement('div');
-    title.className = 'weapon-category-title';
-    title.textContent = category.title;
-    container.appendChild(title);
+    const group = document.createElement('div');
+    group.className = 'weapon-category';
+    group.dataset.category = category.title;
 
-    category.weapons.forEach(weapon => {
-      appendWeaponTab(container, tabByWeapon.get(weapon));
+    // Auto-expand the category that contains the currently active weapon.
+    const containsActive = category.weapons.includes(currentWeapon);
+    if (containsActive || previouslyExpanded.has(category.title)) {
+      group.classList.add('expanded');
+    }
+
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = 'weapon-category-header';
+    header.innerHTML = `
+      <span class="weapon-category-name">${category.title}</span>
+      <span class="weapon-category-chevron" aria-hidden="true">›</span>
+    `;
+    header.addEventListener('click', () => {
+      group.classList.toggle('expanded');
     });
+    group.appendChild(header);
+
+    const list = document.createElement('div');
+    list.className = 'weapon-category-list';
+    category.weapons.forEach(weapon => {
+      appendWeaponTab(list, tabByWeapon.get(weapon));
+    });
+    group.appendChild(list);
+
+    container.appendChild(group);
   });
 }
 
@@ -523,7 +816,10 @@ function renderSkins() {
 
   grid.innerHTML = '';
   if (filtered.length === 0) {
-    grid.innerHTML = '<div style="color:var(--grey);font-family:var(--font-mono);font-size:0.8rem;padding:40px 0;">No skins match your filters.</div>';
+    const msg = currentWeapon === 'selected'
+      ? 'No skins selected yet. Pick some from any weapon tab.'
+      : 'No skins match your filters.';
+    grid.innerHTML = `<div style="color:var(--grey);font-family:var(--font-mono);font-size:0.8rem;padding:40px 0;">${msg}</div>`;
     return;
   }
 
@@ -585,10 +881,21 @@ function toggleSkin(skin, card) {
   }
   updateLoadout();
   updatePreviewCard();
+  updateSelectedTabBadge();
+  if (currentWeapon === 'selected') renderSkins();
+}
+
+function updateSelectedTabBadge() {
+  const tab = document.querySelector('.weapon-tab[data-weapon="selected"]');
+  if (!tab) return;
+  const count = Object.keys(selectedSkins).length;
+  tab.innerHTML = `<span class="weapon-tab-name">Selected</span><span class="weapon-tab-count">${count}</span>`;
+  tab.classList.toggle('has-selected', count > 0);
 }
 
 function updateLoadout() {
   const container = document.getElementById('loadoutSummary');
+  if (!container) return;
   const skins = Object.values(selectedSkins);
 
   if (skins.length === 0) {
@@ -623,7 +930,7 @@ function updateLoadout() {
 }
 
 function updatePreviewCard() {
-  const skins = Object.values(selectedSkins);
+  const skins = sortByWeaponOrder(Object.values(selectedSkins));
   const name = document.getElementById('playerName')?.value || 'YOUR IGN';
   const rank = document.getElementById('playerRank')?.value || 'Rank';
 
@@ -637,16 +944,12 @@ function updatePreviewCard() {
     return;
   }
 
-  pcSkins.innerHTML = skins.slice(0, 12).map(s => `
+  pcSkins.innerHTML = skins.map(s => `
     <div class="pc-skin-item">
       <div class="pc-skin-name">${cleanDisplayText(s.name)}</div>
       <div class="pc-skin-weapon">${cleanDisplayText(s.bundle)}</div>
     </div>
   `).join('');
-
-  if (skins.length > 12) {
-    pcSkins.innerHTML += `<div class="pc-empty">+${skins.length - 12} more skins...</div>`;
-  }
 }
 
 async function exportCard(e) {
@@ -685,6 +988,8 @@ async function exportCard(e) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
+      recordDownloadEvent(skins, name, rank);
+
       if (btn) {
         btn.textContent = 'Downloaded!';
         setTimeout(() => {
@@ -702,7 +1007,6 @@ async function exportCard(e) {
 async function createPortfolioImage(skins, name, rank, format) {
   const groupedSkins = groupSkinsByWeapon(skins);
   const cardWidth = 1080;
-  const cardHeight = 1920;
   const layout = getPhoneExportLayout(groupedSkins);
   const {
     columns,
@@ -718,6 +1022,15 @@ async function createPortfolioImage(skins, name, rank, format) {
   } = layout;
   const sectionWidth = cardWidth - padding * 2;
   const tileWidth = (sectionWidth - sectionPadding * 2 - gap * (columns - 1)) / columns;
+
+  // Grow-to-fit: canvas height stretches to include every skin so nothing
+  // is ever truncated. Floored at 720 so a 1-skin export isn't squashed.
+  const groupedHeight = getGroupedExportHeight(
+    groupedSkins, columns, tileHeight, gap, sectionHeaderHeight, sectionInnerGap, sectionPadding, sectionGap
+  );
+  const naturalHeight = padding + headerHeight + groupedHeight + footerHeight + padding;
+  const cardHeight = Math.max(720, Math.round(naturalHeight));
+
   const scale = 2;
   const canvas = document.createElement('canvas');
   canvas.width = cardWidth * scale;
@@ -726,21 +1039,20 @@ async function createPortfolioImage(skins, name, rank, format) {
   ctx.scale(scale, scale);
 
   drawExportBackground(ctx, cardWidth, cardHeight, format);
-  drawExportHeader(ctx, name, rank, skins, padding, cardWidth);
 
-  const images = await Promise.all(skins.map(skin => loadImage(skin.img || WEAPON_ICONS[skin.weapon])));
+  const rankIconUrl = getRankIconFromValue(rank);
+  const [rankIcon, images, weaponIcons] = await Promise.all([
+    loadImage(rankIconUrl),
+    Promise.all(skins.map(skin => loadImage(skin.img || WEAPON_ICONS[skin.weapon]))),
+    Promise.all(groupedSkins.map(group => loadImage(WEAPON_ICONS[group.weapon])))
+  ]);
   const imageById = new Map(skins.map((skin, index) => [skin.id, images[index]]));
-  const weaponIcons = await Promise.all(groupedSkins.map(group => loadImage(WEAPON_ICONS[group.weapon])));
+
+  drawExportHeader(ctx, name, rank, rankIcon, skins, padding, cardWidth);
   let y = padding + headerHeight;
-  const footerY = cardHeight - footerHeight - padding;
-  let hiddenSkins = 0;
 
   groupedSkins.forEach((group, groupIndex) => {
     const groupHeight = getGroupExportHeight(group.skins.length, columns, tileHeight, gap, sectionHeaderHeight, sectionInnerGap, sectionPadding);
-    if (y + groupHeight > footerY) {
-      hiddenSkins += group.skins.length;
-      return;
-    }
 
     drawWeaponGroupPanel(ctx, padding, y, sectionWidth, groupHeight);
     drawWeaponGroupHeader(ctx, group, weaponIcons[groupIndex], padding + sectionPadding, y + sectionPadding, sectionWidth - sectionPadding * 2, sectionHeaderHeight);
@@ -756,10 +1068,6 @@ async function createPortfolioImage(skins, name, rank, format) {
 
     y += groupHeight + sectionGap;
   });
-
-  if (hiddenSkins > 0) {
-    drawOverflowNotice(ctx, hiddenSkins, padding, Math.min(y, footerY - 56), sectionWidth);
-  }
 
   drawExportFooter(ctx, cardWidth, cardHeight, padding);
   return canvas;
@@ -781,26 +1089,74 @@ function drawExportBackground(ctx, width, height, format) {
   ctx.strokeRect(20, 20, width - 40, height - 40);
 }
 
-function drawExportHeader(ctx, name, rank, skins, padding, width) {
+function drawExportHeader(ctx, name, rank, rankIcon, skins, padding, width) {
   const total = skins.length;
   const totalVp = getTotalVp(skins);
+  const displayName = (name && name.trim()) || 'AshuValz PLAYER';
+  const displayRank = (rank && rank.trim()) || 'UNRANKED';
+
   const vpBoxWidth = 230;
   const vpBoxHeight = 86;
   const vpBoxX = width - padding - vpBoxWidth;
   const vpBoxY = padding + 34;
 
+  // Brand
   ctx.fillStyle = '#FF4655';
   ctx.font = '700 42px Rajdhani, Arial, sans-serif';
+  ctx.textAlign = 'left';
   ctx.fillText('AshuValz', padding, padding + 42);
+
+  // IGN — split off the #TAG so we can color it differently.
+  const tagMatch = displayName.match(/^(.+?)(#\S+)\s*$/);
+  const ignBase = tagMatch ? tagMatch[1].trim() : displayName;
+  const ignTag = tagMatch ? tagMatch[2] : '';
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '700 66px Rajdhani, Arial, sans-serif';
-  ctx.fillText(name || 'AshuValz PLAYER', padding, padding + 106);
+  const ignBaseWidth = ctx.measureText(ignBase).width;
+  ctx.fillText(ignBase, padding, padding + 106);
 
+  if (ignTag) {
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '600 38px Rajdhani, Arial, sans-serif';
+    ctx.fillText(ignTag, padding + ignBaseWidth + 8, padding + 100);
+  }
+
+  // Rank pill — icon + rank label, sitting under the IGN.
+  const pillY = padding + 134;
+  const pillHeight = 64;
+  const iconSize = 52;
+  const pillPaddingX = 16;
+  const labelGap = 14;
+
+  ctx.font = '700 28px Rajdhani, Arial, sans-serif';
+  const labelWidth = ctx.measureText(displayRank.toUpperCase()).width;
+  const pillWidth = pillPaddingX + iconSize + labelGap + labelWidth + pillPaddingX;
+
+  roundRect(ctx, padding, pillY, pillWidth, pillHeight, 14, 'rgba(255,70,85,0.12)', 'rgba(255,70,85,0.45)');
+
+  if (rankIcon) {
+    drawContainedImage(ctx, rankIcon, padding + pillPaddingX, pillY + (pillHeight - iconSize) / 2, iconSize, iconSize);
+  } else {
+    // Placeholder dot when no rank icon (Unranked).
+    ctx.beginPath();
+    ctx.arc(padding + pillPaddingX + iconSize / 2, pillY + pillHeight / 2, iconSize / 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fill();
+  }
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '700 28px Rajdhani, Arial, sans-serif';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(displayRank.toUpperCase(), padding + pillPaddingX + iconSize + labelGap, pillY + pillHeight / 2 + 1);
+  ctx.textBaseline = 'alphabetic';
+
+  // Skin count + VP summary line under the pill.
   ctx.fillStyle = '#A7B0BE';
-  ctx.font = '500 24px Rajdhani, Arial, sans-serif';
-  ctx.fillText(`${rank || 'UNRANKED'} · ${total} skin${total !== 1 ? 's' : ''} · ${formatVp(totalVp)} VP`, padding, padding + 142);
+  ctx.font = '500 22px Rajdhani, Arial, sans-serif';
+  ctx.fillText(`${total} skin${total !== 1 ? 's' : ''} · ${formatVp(totalVp)} VP`, padding, pillY + pillHeight + 26);
 
+  // VP box (right side, unchanged position).
   roundRect(ctx, vpBoxX, vpBoxY, vpBoxWidth, vpBoxHeight, 14, 'rgba(255,70,85,0.13)', 'rgba(255,70,85,0.55)');
   ctx.textAlign = 'center';
   ctx.fillStyle = '#A7B0BE';
@@ -811,11 +1167,13 @@ function drawExportHeader(ctx, name, rank, skins, padding, width) {
   ctx.fillText(formatVp(totalVp), vpBoxX + vpBoxWidth / 2, vpBoxY + 64);
   ctx.textAlign = 'left';
 
+  // Divider under the whole header block.
+  const dividerY = pillY + pillHeight + 50;
   ctx.strokeStyle = 'rgba(255,255,255,0.14)';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(padding, padding + 178);
-  ctx.lineTo(width - padding, padding + 178);
+  ctx.moveTo(padding, dividerY);
+  ctx.lineTo(width - padding, dividerY);
   ctx.stroke();
 }
 
@@ -897,11 +1255,8 @@ function drawExportFooter(ctx, width, height, padding) {
   ctx.lineTo(width - padding, height - 66);
   ctx.stroke();
 
-  ctx.fillStyle = '#FF4655';
-  ctx.font = '700 18px monospace';
-  ctx.fillText('ashuvalz.gg', padding, height - 30);
-
   ctx.fillStyle = '#A7B0BE';
+  ctx.font = '700 18px monospace';
   ctx.textAlign = 'right';
   ctx.fillText('Generated with AshuValz', width - padding, height - 30);
   ctx.textAlign = 'left';
@@ -984,10 +1339,10 @@ function getPhoneExportLayout(groups) {
   const totalSkins = groups.reduce((total, group) => total + group.skins.length, 0);
   const availableHeight = 1920 - 34 - 150 - 56;
   const presets = [
-    { columns: totalSkins > 12 ? 3 : 2, padding: 34, gap: 12, headerHeight: 150, footerHeight: 56, sectionHeaderHeight: 50, sectionInnerGap: 8, sectionPadding: 10, sectionGap: 10, tileHeight: 88 },
-    { columns: 4, padding: 34, gap: 8, headerHeight: 150, footerHeight: 56, sectionHeaderHeight: 40, sectionInnerGap: 6, sectionPadding: 8, sectionGap: 8, tileHeight: 66 },
-    { columns: 5, padding: 30, gap: 6, headerHeight: 144, footerHeight: 52, sectionHeaderHeight: 34, sectionInnerGap: 5, sectionPadding: 6, sectionGap: 6, tileHeight: 54 },
-    { columns: 6, padding: 28, gap: 5, headerHeight: 138, footerHeight: 50, sectionHeaderHeight: 30, sectionInnerGap: 4, sectionPadding: 5, sectionGap: 5, tileHeight: 48 }
+    { columns: totalSkins > 12 ? 3 : 2, padding: 34, gap: 12, headerHeight: 260, footerHeight: 56, sectionHeaderHeight: 50, sectionInnerGap: 8, sectionPadding: 10, sectionGap: 10, tileHeight: 88 },
+    { columns: 4, padding: 34, gap: 8, headerHeight: 260, footerHeight: 56, sectionHeaderHeight: 40, sectionInnerGap: 6, sectionPadding: 8, sectionGap: 8, tileHeight: 66 },
+    { columns: 5, padding: 30, gap: 6, headerHeight: 260, footerHeight: 52, sectionHeaderHeight: 34, sectionInnerGap: 5, sectionPadding: 6, sectionGap: 6, tileHeight: 54 },
+    { columns: 6, padding: 28, gap: 5, headerHeight: 260, footerHeight: 50, sectionHeaderHeight: 30, sectionInnerGap: 4, sectionPadding: 5, sectionGap: 5, tileHeight: 48 }
   ];
 
   return presets.find(preset => {

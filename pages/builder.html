@@ -6,6 +6,7 @@
   <title>Builder — AshuValz</title>
   <link rel="stylesheet" href="../css/style.css"/>
   <link rel="stylesheet" href="../css/builder.css"/>
+  <link rel="stylesheet" href="../css/auth.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
@@ -19,8 +20,9 @@
       <a href="../index.html">Home</a>
       <a href="builder.html" class="active">Builder</a>
       <a href="showcase.html">Showcase</a>
+      <button class="nav-support" id="supportFab" type="button" aria-label="Open support" aria-expanded="false">Support</button>
+      <button class="nav-account" id="navAccount" type="button" data-state="out">Login</button>
     </div>
-    <button class="nav-cta" id="exportBtn" data-format="png">Download Portfolio</button>
   </nav>
 
   <div class="builder-layout">
@@ -31,13 +33,14 @@
         <div class="sidebar-label">SELECT WEAPON</div>
         <div class="weapon-tabs" id="weaponTabs">
           <button class="weapon-tab active" data-weapon="all">All</button>
+          <button class="weapon-tab weapon-tab-selected" data-weapon="selected">Selected</button>
           <div class="weapon-category-title">Pistols</div>
           <button class="weapon-tab" data-weapon="classic">Classic</button>
           <button class="weapon-tab" data-weapon="shorty">Shorty</button>
           <button class="weapon-tab" data-weapon="frenzy">Frenzy</button>
           <button class="weapon-tab" data-weapon="ghost">Ghost</button>
-          <button class="weapon-tab" data-weapon="sheriff">Sheriff</button>
           <button class="weapon-tab" data-weapon="bandit">Bandit</button>
+          <button class="weapon-tab" data-weapon="sheriff">Sheriff</button>
           <div class="weapon-category-title">SMG</div>
           <button class="weapon-tab" data-weapon="stinger">Stinger</button>
           <button class="weapon-tab" data-weapon="spectre">Spectre</button>
@@ -75,22 +78,6 @@
         <div class="tier-helper">Weapons sort by matching skin count.</div>
       </div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-label">MY LOADOUT</div>
-        <div id="loadoutSummary" class="loadout-summary">
-          <div class="loadout-empty">No skins selected yet.<br>Click a skin to add it.</div>
-        </div>
-        <button class="clear-btn" id="clearBtn">Clear All</button>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">PORTFOLIO INFO</div>
-        <input type="text" id="playerName" placeholder="Your IGN (e.g. TenZ#000)" class="sidebar-input"/>
-        <div class="rank-input-wrap" id="rankInputWrap">
-          <img class="rank-selected-icon hidden" id="rankSelectedIcon" src="" alt="Selected rank"/>
-          <input type="text" id="playerRank" placeholder="Your Rank" class="sidebar-input rank-input" readonly/>
-        </div>
-      </div>
     </aside>
 
     <!-- MAIN: SKIN GRID -->
@@ -112,10 +99,17 @@
 
     <!-- RIGHT: PORTFOLIO PREVIEW -->
     <aside class="preview-panel">
+      <div class="preview-info">
+        <div class="sidebar-label">PORTFOLIO INFO</div>
+        <input type="text" id="playerName" placeholder="Your IGN (e.g. TenZ#000)" class="sidebar-input"/>
+        <div class="rank-input-wrap" id="rankInputWrap">
+          <img class="rank-selected-icon hidden" id="rankSelectedIcon" src="" alt="Selected rank"/>
+          <input type="text" id="playerRank" placeholder="Your Rank" class="sidebar-input rank-input" readonly/>
+        </div>
+      </div>
       <div class="sidebar-label">PORTFOLIO PREVIEW</div>
       <div class="portfolio-card" id="portfolioCard">
         <div class="pc-header">
-          <div class="pc-title">AshuValz</div>
           <div class="pc-player" id="pcPlayer">YOUR IGN</div>
           <div class="pc-rank" id="pcRank">Rank</div>
         </div>
@@ -123,12 +117,16 @@
           <div class="pc-empty">Select skins to preview your portfolio card</div>
         </div>
         <div class="pc-footer">
-          <span class="pc-brand">ashuvalz.gg</span>
           <span class="pc-count" id="pcCount">0 skins</span>
         </div>
       </div>
       <div class="export-actions">
         <button class="btn-primary export-full" id="downloadPortfolioBtn" data-format="png">Download Portfolio</button>
+        <div class="portfolio-actions">
+          <button class="btn-ghost" id="savePortfolioBtn" type="button" title="Login required">Save</button>
+          <button class="btn-ghost" id="loadPortfolioBtn" type="button" title="Login required">Load</button>
+          <button class="btn-ghost clear-btn" id="clearBtn" type="button">Clear</button>
+        </div>
       </div>
     </aside>
 
@@ -161,39 +159,125 @@
     </div>
   </div>
 
-  <!-- SUBSCRIBE GATE -->
-  <div class="sub-gate hidden" id="subGate" aria-hidden="true">
-    <div class="sub-gate-backdrop" id="subGateBackdrop"></div>
-    <div class="sub-gate-panel" role="dialog" aria-modal="true" aria-labelledby="subGateTitle">
-      <button class="rarity-close" id="subGateClose" type="button" aria-label="Close">×</button>
-      <div class="sub-gate-badge">PORTFOLIO LOCKED</div>
-      <h2 class="sub-gate-title" id="subGateTitle">One Step to <span>Unlock</span></h2>
-      <p class="sub-gate-sub">Subscribe to <strong>AshuValz</strong> on YouTube to unlock unlimited portfolio downloads. Takes 5 seconds — supports the project.</p>
+  <!-- FEEDBACK DOWNLOAD GATE -->
+  <div class="feedback-gate hidden" id="feedbackGate" aria-hidden="true">
+    <div class="feedback-gate-backdrop" id="feedbackGateBackdrop"></div>
+    <div class="feedback-gate-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackGateTitle">
+      <button class="rarity-close" id="feedbackGateClose" type="button" aria-label="Close">×</button>
+      <div class="feedback-gate-badge">QUICK CHECK</div>
+      <h2 class="feedback-gate-title" id="feedbackGateTitle">Do you like our <span>service?</span></h2>
+      <p class="feedback-gate-sub">Tap a thumb first. Your vote reveals the totals, then your portfolio download unlocks.</p>
 
-      <div class="sub-gate-steps">
-        <div class="sub-gate-step" data-step="1">
-          <div class="sub-gate-step-num">01</div>
-          <div class="sub-gate-step-body">
-            <div class="sub-gate-step-title">Open the channel</div>
-            <div class="sub-gate-step-desc">Hit subscribe (and the bell, if you're feeling generous).</div>
-          </div>
-          <a href="https://www.youtube.com/@AshuValz?sub_confirmation=1" target="_blank" rel="noopener" class="sub-gate-btn primary" id="subGateOpenBtn">Subscribe →</a>
-        </div>
-        <div class="sub-gate-step" data-step="2">
-          <div class="sub-gate-step-num">02</div>
-          <div class="sub-gate-step-body">
-            <div class="sub-gate-step-title">Unlock your portfolio</div>
-            <div class="sub-gate-step-desc">Confirm below — this saves so you never see this again.</div>
-          </div>
-          <button type="button" class="sub-gate-btn ghost" id="subGateConfirmBtn" disabled>I Subscribed — Unlock</button>
-        </div>
+      <div class="feedback-vote-row" id="feedbackVoteRow">
+        <button class="feedback-vote feedback-vote-up" type="button" data-feedback-vote="up" aria-label="Thumbs up">
+          <span class="feedback-vote-icon" aria-hidden="true">👍</span>
+          <span class="feedback-vote-label">Like</span>
+          <span class="feedback-vote-count hidden" id="feedbackUpCount">0</span>
+        </button>
+        <button class="feedback-vote feedback-vote-down" type="button" data-feedback-vote="down" aria-label="Thumbs down">
+          <span class="feedback-vote-icon" aria-hidden="true">👎</span>
+          <span class="feedback-vote-label">Dislike</span>
+          <span class="feedback-vote-count hidden" id="feedbackDownCount">0</span>
+        </button>
       </div>
 
-      <div class="sub-gate-foot">No login required. Honor system — but please actually subscribe ♡</div>
+      <div class="feedback-reaction hidden" id="feedbackReaction" aria-live="polite">
+        <div class="feedback-sticker" id="feedbackSticker">🥰</div>
+        <div class="feedback-reaction-title" id="feedbackReactionTitle">Thank you!</div>
+        <div class="feedback-reaction-message" id="feedbackReactionMessage">Love from Ashu</div>
+        <button type="button" class="feedback-download-btn" id="feedbackDownloadBtn">Download Image</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORT POPUP -->
+  <div class="support-pop hidden" id="supportPop" aria-hidden="true">
+    <div class="support-pop-backdrop"></div>
+    <div class="support-pop-panel">
+      <button class="support-pop-close" type="button" aria-label="Close">×</button>
+      <div class="support-pop-title">Follow AshuValz</div>
+      <div class="support-pop-sub">Drop a follow — it helps to grow</div>
+      <div class="support-pop-links">
+      <a href="https://www.youtube.com/@AshuValz" target="_blank" rel="noopener" class="support-link support-link-yt">
+        <span class="support-link-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+          </svg>
+        </span>
+        <div class="support-link-text">
+          <div class="support-link-name">YouTube</div>
+          <div class="support-link-handle">@AshuValz</div>
+        </div>
+        <span class="support-link-arrow">→</span>
+      </a>
+      <a href="https://www.instagram.com/__khanduri_ashu_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" class="support-link support-link-ig">
+        <span class="support-link-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.5.4 1.1.4 2.2.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.5.2-1.1.4-2.2.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.5-.4-1.1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.5-.2 1.1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 5.8.1 4.9.3 4.1.6c-.8.3-1.5.7-2.2 1.4C1.3 2.6.9 3.3.6 4.1.3 4.9.1 5.8.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.1 1.3.3 2.2.6 3 .3.8.7 1.5 1.4 2.2.7.7 1.4 1.1 2.2 1.4.8.3 1.7.5 3 .6 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c1.3-.1 2.2-.3 3-.6.8-.3 1.5-.7 2.2-1.4.7-.7 1.1-1.4 1.4-2.2.3-.8.5-1.7.6-3 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.1-1.3-.3-2.2-.6-3-.3-.8-.7-1.5-1.4-2.2C21.4 1.3 20.7.9 19.9.6 19.1.3 18.2.1 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.9a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/>
+          </svg>
+        </span>
+        <div class="support-link-text">
+          <div class="support-link-name">Instagram</div>
+          <div class="support-link-handle">@__khanduri_ashu_</div>
+        </div>
+        <span class="support-link-arrow">→</span>
+      </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-modal hidden" id="authModal" aria-hidden="true">
+    <div class="auth-backdrop" id="authBackdrop"></div>
+    <div class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="auth-close" id="authClose" type="button" aria-label="Close">×</button>
+      <h2 class="auth-title" id="authTitle">Your <span>Account</span></h2>
+      <div class="auth-sub">Save loadouts. Track votes. Free forever.</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" type="button">Login</button>
+        <button class="auth-tab" id="authTabRegister" type="button">Sign Up</button>
+      </div>
+
+      <div class="auth-error hidden" id="authError"></div>
+
+      <form class="auth-form" id="authFormLogin" autocomplete="on">
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="you@example.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" name="password" required minlength="6" placeholder="Your password" autocomplete="current-password"/>
+        </div>
+        <button type="submit" class="auth-submit">Log In</button>
+      </form>
+
+      <form class="auth-form hidden" id="authFormRegister" autocomplete="on">
+        <div class="auth-field">
+          <label>Display Name</label>
+          <input type="text" name="name" required placeholder="What should we call you?" autocomplete="nickname"/>
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="you@example.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" name="password" required minlength="6" placeholder="Min 6 characters" autocomplete="new-password"/>
+        </div>
+        <button type="submit" class="auth-submit">Sign Up</button>
+      </form>
+
+      <div class="auth-foot">Login is required, but everything stays 100% free. We never share your email.</div>
     </div>
   </div>
 
   <script src="../js/skins-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
   <script src="../js/builder.js"></script>
+  <script src="../js/support.js"></script>
 </body>
 </html>

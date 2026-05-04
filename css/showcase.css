@@ -138,8 +138,31 @@
   border-radius: 14px;
 }
 
+.ep-skin.ep-more {
+  border-left-color: rgba(255,70,85,0.55);
+  background: rgba(255,70,85,0.08);
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, border-left-color 0.2s ease;
+}
+.ep-skin.ep-more:hover {
+  background: rgba(255,70,85,0.16);
+  border-left-color: var(--red);
+}
+.ep-skin.ep-more .ep-skin-name {
+  color: var(--red);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+}
+
 .showcase-cta {
   background: rgba(17,17,24,0.5);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 28px;
 }
+
