@@ -2706,3 +2706,141 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   BUNDLE CARDS — show a real weapon image inside each card with
+   accent glow, info column, and a hover-revealed "Browse" CTA.
+   ============================================================ */
+.bundle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 240px;
+  padding: 22px 22px 20px !important;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.bundle-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 55%);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.25s ease;
+}
+.bundle-card:hover::after { opacity: 1; }
+
+.bundle-skin {
+  position: absolute;
+  right: -22%;
+  top: 50%;
+  width: 96%;
+  height: auto;
+  max-height: 130%;
+  transform: translateY(-50%) rotate(-12deg);
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+  filter: drop-shadow(0 14px 22px rgba(0,0,0,0.5));
+  transition: transform 0.35s cubic-bezier(.2,.8,.2,1), filter 0.25s ease;
+  opacity: 0.95;
+}
+.bundle-card:hover .bundle-skin {
+  transform: translateY(-50%) translateX(-6%) rotate(-8deg) scale(1.06);
+  filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--accent) 60%, rgba(0,0,0,0.5)));
+}
+
+.bundle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+  max-width: 60%;
+}
+
+.bundle-tag-pill {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, rgba(0,0,0,0.3));
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bundle-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.3vw, 2.4rem) !important;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--white);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+}
+
+.bundle-meta {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  color: var(--grey-light);
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.bundle-cta {
+  margin-top: auto;
+  align-self: flex-start;
+  z-index: 2;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, rgba(0,0,0,0.2));
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translateY(4px);
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.bundle-card:hover .bundle-cta {
+  opacity: 1;
+  transform: translateY(0);
+  background: var(--accent);
+  color: #0a0a0f;
+  border-color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .bundle-card {
+    min-height: 180px;
+    padding: 18px 16px 16px !important;
+  }
+  .bundle-skin {
+    right: -28%;
+    width: 95%;
+    opacity: 0.9;
+  }
+  .bundle-info {
+    max-width: 65%;
+    gap: 6px;
+  }
+  .bundle-meta {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+  .bundle-cta {
+    font-size: 0.65rem;
+    padding: 5px 12px;
+  }
+}
