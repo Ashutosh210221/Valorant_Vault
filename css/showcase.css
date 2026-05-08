@@ -166,3 +166,70 @@
   border-radius: 28px;
 }
 
+@media (max-width: 600px) {
+  .showcase-page {
+    padding: 110px 16px 32px !important;
+  }
+
+  .showcase-header {
+    padding: 22px 18px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .showcase-sub {
+    font-size: 0.95rem;
+  }
+
+  .example-grid {
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .example-portfolio {
+    border-radius: 20px;
+  }
+
+  .ep-header {
+    padding: 16px 18px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .ep-player {
+    font-size: 1.1rem;
+  }
+
+  .ep-label {
+    padding: 10px 18px 6px;
+  }
+
+  .ep-skins {
+    padding: 0 12px 8px;
+  }
+
+  .ep-skin {
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .ep-skin-name {
+    font-size: 0.88rem;
+  }
+
+  .ep-footer {
+    padding: 10px 18px;
+  }
+
+  .showcase-cta {
+    padding: 48px 22px;
+    border-radius: 22px;
+  }
+
+  .showcase-cta .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+  }
+}
+

@@ -16,7 +16,10 @@
 
   <nav class="navbar">
     <a href="../index.html" class="nav-logo">Ashu<span>Valz</span></a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="../index.html">Home</a>
       <a href="builder.html" class="active">Builder</a>
       <a href="showcase.html">Showcase</a>
@@ -98,7 +101,7 @@
     </main>
 
     <!-- RIGHT: PORTFOLIO PREVIEW -->
-    <aside class="preview-panel">
+    <aside class="preview-panel" id="previewPanel">
       <div class="preview-info">
         <div class="sidebar-label">PORTFOLIO INFO</div>
         <input type="text" id="playerName" placeholder="Your IGN (e.g. TenZ#000)" class="sidebar-input"/>
@@ -131,6 +134,13 @@
     </aside>
 
   </div>
+
+  <!-- MOBILE-ONLY sticky CTA: jump to portfolio preview / download. -->
+  <a class="mobile-portfolio-cta" id="mobilePortfolioCta" href="#previewPanel" aria-label="Jump to portfolio">
+    <span class="mobile-cta-label">Portfolio</span>
+    <span class="mobile-cta-count" id="mobileCtaCount">0 skins</span>
+    <span class="mobile-cta-arrow" aria-hidden="true">↓</span>
+  </a>
 
   <div class="rarity-modal hidden" id="rarityModal" aria-hidden="true">
     <div class="rarity-backdrop" id="rarityBackdrop"></div>
@@ -279,5 +289,6 @@
   <script src="../js/auth.js"></script>
   <script src="../js/builder.js"></script>
   <script src="../js/support.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 </html>

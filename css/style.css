@@ -2390,3 +2390,319 @@ body {
   opacity: 1;
   max-width: 80px;
 }
+
+/* ============================================================
+   MOBILE NAV — hamburger toggle + slide-down menu panel.
+   Hidden on desktop; takes over the navbar below 900px.
+   ============================================================ */
+.nav-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.nav-toggle:hover { border-color: var(--red); }
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); background: var(--red); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); background: var(--red); }
+
+@media (max-width: 900px) {
+  body.nav-open { overflow: hidden; }
+
+  .navbar {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .nav-toggle {
+    display: flex;
+    order: 3;
+    margin-left: auto;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+
+  .nav-links {
+    display: none;
+    order: 4;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px 6px 18px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    gap: 4px;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a,
+  .nav-links .nav-support,
+  .nav-links .nav-account {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+
+  .nav-links a {
+    color: var(--grey-light);
+    border: 1px solid transparent;
+  }
+  .nav-links a:hover,
+  .nav-links a.active {
+    background: rgba(255,70,85,0.08);
+    border-color: rgba(255,70,85,0.32);
+    color: var(--white);
+  }
+
+  .nav-links .nav-support {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--grey-light);
+  }
+
+  .nav-links .nav-account {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .navbar.is-open {
+    height: auto;
+  }
+}
+
+/* When the mobile menu is open, the navbar grows — make sure it
+   doesn't push content but instead overlays cleanly. */
+@media (max-width: 900px) {
+  .nav-links.open {
+    background: rgba(10,10,15,0.96);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    margin-left: -22px;
+    margin-right: -22px;
+    margin-top: 12px;
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
+
+/* ============================================================
+   PHONE RESPONSIVE POLISH — final pass for phones (<= 600px).
+   Fixes hero crowding, stats wrap, footer, feedback counter,
+   tap target sizes, and tightens section paddings.
+   ============================================================ */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 16px;
+    margin-top: 8px;
+    width: calc(100% - 16px);
+    border-radius: 14px;
+  }
+
+  .nav-logo {
+    font-size: 1.3rem;
+  }
+
+  .hero {
+    padding: 110px 20px 50px !important;
+    min-height: auto !important;
+  }
+
+  .hero-content {
+    margin-left: 0 !important;
+    text-align: center !important;
+    max-width: 100% !important;
+  }
+
+  .hero-content::before {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-title {
+    font-size: clamp(2.6rem, 11vw, 3.6rem) !important;
+    line-height: 0.95 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .hero-sub {
+    font-size: 0.98rem !important;
+    margin-bottom: 24px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-btns {
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost {
+    flex: 1 1 auto;
+    min-width: 140px;
+    padding: 13px 18px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .hero-feature-strip {
+    grid-template-columns: 1fr !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 320px !important;
+  }
+
+  .hero-visual {
+    height: 320px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .jett-loop-agent,
+  .official-jett {
+    width: 100% !important;
+    max-width: 360px !important;
+    height: 100% !important;
+    object-position: center center !important;
+    margin-left: auto;
+    margin-right: auto;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    padding: 14px 16px;
+    font-size: 0.78rem;
+    width: calc(100% - 24px);
+    border-radius: 16px;
+  }
+
+  .stat {
+    flex: 0 0 auto;
+  }
+
+  .stat-num {
+    font-size: 1.15rem;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .how-it-works,
+  .featured {
+    padding: 48px 18px !important;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    margin-bottom: 28px;
+  }
+
+  .steps {
+    gap: 14px;
+  }
+
+  .step {
+    padding: 22px 20px;
+    min-width: 0;
+  }
+
+  .step-num {
+    font-size: 3rem;
+    margin-bottom: 10px;
+  }
+
+  .bundle-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .bundle-card {
+    padding: 22px 18px;
+  }
+
+  .bundle-name {
+    font-size: 1.4rem;
+  }
+
+  .footer {
+    padding: 36px 20px;
+  }
+
+  .footer-logo {
+    font-size: 1.6rem;
+  }
+
+  .feedback-counter {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.65rem;
+  }
+
+  .feedback-counter-side {
+    padding: 6px 10px;
+    min-height: 32px;
+  }
+}
+
+/* Extra-small phones (<= 380px) — iPhone SE / older Androids. */
+@media (max-width: 380px) {
+  .navbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .nav-logo {
+    font-size: 1.15rem;
+  }
+
+  .nav-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hero {
+    padding: 100px 16px 44px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 11vw, 3rem) !important;
+  }
+
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .bundle-grid {
+    grid-template-columns: 1fr;
+  }
+}

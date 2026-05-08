@@ -1210,3 +1210,215 @@ body {
   .feedback-vote { min-height: 120px; padding: 14px 10px; }
   .feedback-vote-icon { font-size: 2.4rem; }
 }
+
+/* ============================================================
+   BUILDER MOBILE — show preview panel inline at bottom and
+   add a sticky "Portfolio" CTA so users can always reach it.
+   ============================================================ */
+.mobile-portfolio-cta {
+  display: none;
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 90;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--red), #ff2233);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 16px 36px rgba(255,70,85,0.35), 0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+
+.mobile-portfolio-cta:hover,
+.mobile-portfolio-cta:active {
+  background: linear-gradient(135deg, #ff2233, #ff5566);
+}
+
+.mobile-cta-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.28);
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.mobile-cta-arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+@media (max-width: 1280px) {
+  /* Re-enable preview panel inline below the skin grid on
+     screens where it was hidden in the desktop layout. */
+  .preview-panel {
+    display: flex !important;
+    margin-top: 14px;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .portfolio-card {
+    flex: 0 0 auto;
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 820px) {
+  .mobile-portfolio-cta {
+    display: inline-flex;
+  }
+
+  /* Add bottom padding so the sticky CTA never covers content. */
+  .builder-layout {
+    padding-bottom: 92px;
+  }
+
+  .preview-panel {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .portfolio-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .portfolio-actions .btn-ghost {
+    padding: 11px 6px;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    min-height: 42px;
+  }
+
+  .export-full {
+    padding: 14px;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+
+  /* Sidebar: tighten + make weapon tabs scroll horizontally
+     so they don't dominate a phone screen. */
+  .sidebar {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .weapon-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .weapon-tab {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    min-height: 36px;
+  }
+
+  .weapon-category-title {
+    flex: 1 0 100%;
+    margin: 8px 0 2px;
+  }
+
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-input {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .main-weapon-label {
+    font-size: 1.6rem !important;
+  }
+
+  /* Skin grid: 2 columns on phones, generous tap targets. */
+  .skin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .skin-card {
+    min-height: 190px !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+  }
+
+  .skin-image-wrap {
+    height: 96px !important;
+  }
+
+  .skin-name {
+    font-size: 0.85rem;
+  }
+
+  /* Rarity / rank popups — full-width sheets on small screens. */
+  .rarity-panel,
+  .rank-panel {
+    padding: 22px 18px !important;
+    border-radius: 22px;
+    max-height: 86vh;
+    overflow-y: auto;
+  }
+
+  .rarity-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .rank-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .rank-choice-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .rarity-weapon {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rarity-weapon-icon {
+    width: 110px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 420px) {
+  .skin-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .skin-card {
+    min-height: 180px !important;
+    padding: 10px !important;
+  }
+
+  .skin-image-wrap {
+    height: 86px !important;
+  }
+
+  .rank-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
