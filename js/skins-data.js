@@ -9530,7 +9530,7 @@ const SKINS_DATA = {
     {
       "id": "knife-champions-2021-karambit-1ea64c8d",
       "name": "Champions 2021 Karambit",
-      "bundle": "Champions 2021 Karambit",
+      "bundle": "Champions 2021",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/62926dfc-4ffb-c65e-dd4b-8b96b6deee77/fullrender.png"
@@ -9538,7 +9538,7 @@ const SKINS_DATA = {
     {
       "id": "knife-champions-2022-butterfly-knife-6946cd0e",
       "name": "Champions 2022 Butterfly Knife",
-      "bundle": "Champions 2022 Butterfly Knife",
+      "bundle": "Champions 2022",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/579c78dc-405e-8e01-949f-d6afb4fb1bc3/fullrender.png"
@@ -9546,7 +9546,7 @@ const SKINS_DATA = {
     {
       "id": "knife-champions-2023-kunai-27f27500",
       "name": "Champions 2023 Kunai",
-      "bundle": "Champions 2023 Kunai",
+      "bundle": "Champions 2023",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/13efd2df-4efe-5f22-7558-45894486df06/fullrender.png"
@@ -9554,7 +9554,7 @@ const SKINS_DATA = {
     {
       "id": "knife-champions-2024-blade-30300aea",
       "name": "Champions 2024 Blade",
-      "bundle": "Champions 2024 Blade",
+      "bundle": "Champions 2024",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/e414be02-4af4-10e9-2589-1daae7087208/fullrender.png"
@@ -9562,7 +9562,7 @@ const SKINS_DATA = {
     {
       "id": "knife-champions-2025-butterfly-knife-d901cc46",
       "name": "Champions 2025 Butterfly Knife",
-      "bundle": "Champions 2025 Butterfly Knife",
+      "bundle": "Champions 2025",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/471b294d-41ec-93c8-d470-af87fcabd94f/fullrender.png"
@@ -10162,9 +10162,9 @@ const SKINS_DATA = {
     {
       "id": "knife-personal-administrative-melee-unit-239ed20b",
       "name": "Personal Administrative Melee Unit",
-      "bundle": "Personal Administrative Melee Unit",
-      "tier": "exclusive",
-      "accent": "#FF8C00",
+      "bundle": "Protocol 781-A",
+      "tier": "ultra",
+      "accent": "#FFE15A",
       "img": "https://media.valorant-api.com/weaponskinchromas/555d0161-4ed0-45a8-c829-fea356bc8f96/fullrender.png"
     },
     {
@@ -10266,7 +10266,7 @@ const SKINS_DATA = {
     {
       "id": "knife-relic-of-the-sentinel-6fd8cc46",
       "name": "Relic of the Sentinel",
-      "bundle": "Relic of the Sentinel",
+      "bundle": "Sentinels of Light",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/ab3d2950-426a-9b94-193d-65b53348386a/fullrender.png"
@@ -10274,7 +10274,7 @@ const SKINS_DATA = {
     {
       "id": "knife-relic-stone-daggers-a03598b3",
       "name": "Relic Stone Daggers",
-      "bundle": "Relic Stone Daggers",
+      "bundle": "Sentinels of Light",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/733cc417-4f08-6f0b-0db8-bfa4416112e6/fullrender.png"
@@ -10482,7 +10482,7 @@ const SKINS_DATA = {
     {
       "id": "knife-terminus-a-quo-1b8de6d7",
       "name": "Terminus A Quo",
-      "bundle": "Terminus A Quo",
+      "bundle": "ChronoVoid",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/27bfba0e-4747-41ca-b1c1-2082db194ba1/fullrender.png"
@@ -10586,7 +10586,7 @@ const SKINS_DATA = {
     {
       "id": "knife-waveform-400bb847",
       "name": "Waveform",
-      "bundle": "Waveform",
+      "bundle": "Spectrum",
       "tier": "exclusive",
       "accent": "#FF8C00",
       "img": "https://media.valorant-api.com/weaponskinchromas/84eafd91-4e6b-0720-7c55-6484cbb732b8/fullrender.png"

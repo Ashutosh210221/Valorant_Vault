@@ -22,6 +22,28 @@ const VP_BY_TIER = {
   ultra: 2475
 };
 
+// Knives are priced higher than guns at every tier in Valorant.
+const KNIFE_VP_BY_TIER = {
+  standard: 0,
+  select: 875,
+  deluxe: 3550,
+  premium: 3550,
+  exclusive: 4350,
+  ultra: 5350
+};
+
+// Bundles where Riot uses non-standard VP that doesn't match the
+// content tier defaults. Spectrum (BTS x VALORANT) and the Champions
+// bundles all sit at the 2675 VP / 5350 VP price point.
+const BUNDLE_VP_OVERRIDES = {
+  'Spectrum':       { gun: 2675, knife: 5350 },
+  'Champions 2021': { gun: 2675, knife: 5350 },
+  'Champions 2022': { gun: 2675, knife: 5350 },
+  'Champions 2023': { gun: 2675, knife: 5350 },
+  'Champions 2024': { gun: 2675, knife: 5350 },
+  'Champions 2025': { gun: 2675, knife: 5350 }
+};
+
 const RANK_OPTIONS = [
   'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum',
   'Diamond', 'Ascendant', 'Immortal', 'Radiant'
@@ -1394,6 +1416,14 @@ function getWeaponSortIndex(weapon) {
 }
 
 function getSkinVp(skin) {
+  if (!skin) return 0;
+  const weapon = skin.weapon || (skin.id ? skin.id.split('-')[0] : '');
+  const isKnife = weapon === 'knife';
+
+  const override = BUNDLE_VP_OVERRIDES[skin.bundle];
+  if (override) return isKnife ? override.knife : override.gun;
+
+  if (isKnife) return KNIFE_VP_BY_TIER[skin.tier] ?? 0;
   return VP_BY_TIER[skin.tier] ?? 0;
 }
 
