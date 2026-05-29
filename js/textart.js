@@ -6,7 +6,7 @@
 (function () {
   const CATEGORIES = [
     { id: 'all',       label: 'All' },
-    { id: 'big',       label: 'Block Art' },
+    { id: 'cartoon',   label: 'Cartoon' },
     { id: 'gg',        label: 'GG / WP' },
     { id: 'hype',      label: 'Hype' },
     { id: 'wholesome', label: 'Wholesome' },
@@ -104,18 +104,15 @@
     }
 
     grid.innerHTML = items.map(item => {
-      const isBig = item.category === 'big';
-      const lineCount = item.art.split('\n').length;
-      const isMultiLine = lineCount > 1;
+      const isCartoon = item.category === 'cartoon';
       const count = getCount(item.id);
       const catLabel = categoryLabel(item.category);
       return `
-      <article class="ta-card${isBig ? ' ta-card--big' : ''}${isMultiLine ? ' ta-card--multi' : ''}" data-id="${item.id}" data-art="${encodeURIComponent(item.art)}" data-line-count="${lineCount}" tabindex="0" role="button" aria-label="Copy ${escapeHtml(item.title)}">
+      <article class="ta-card${isCartoon ? ' ta-card--big' : ''}" data-id="${item.id}" data-art="${encodeURIComponent(item.art)}" tabindex="0" role="button" aria-label="Copy ${escapeHtml(item.title)}">
         <div class="ta-art-wrap">
-          <pre class="ta-art${isBig ? ' ta-art--big' : ''}">${escapeHtml(item.art)}</pre>
+          <pre class="ta-art${isCartoon ? ' ta-art--big' : ''}">${escapeHtml(item.art)}</pre>
           <span class="ta-count-badge" data-count-id="${item.id}">${formatCount(count)}</span>
           <span class="ta-copy-flash">Copied ✓</span>
-          ${isMultiLine ? `<span class="ta-line-pill" data-line-pill>Click to copy line 1/${lineCount}</span>` : ''}
         </div>
         <div class="ta-meta">
           <span class="ta-cat-tag">${escapeHtml(catLabel)}</span>
@@ -137,11 +134,6 @@
     });
   }
 
-  // For multi-line pieces, keep a per-card cursor so each click
-  // copies the next line in sequence (Valorant chat only sends one
-  // line per paste, so the user pastes -> sends -> clicks again).
-  const lineCursors = {};
-
   async function copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
@@ -160,30 +152,10 @@
   async function copyCard(card) {
     const art = decodeURIComponent(card.dataset.art);
     const id = card.dataset.id;
-    const lines = art.split('\n');
-    const isMulti = lines.length > 1;
-
-    let copied;
-    let nextLabel = '';
-    if (isMulti) {
-      const i = lineCursors[id] || 0;
-      copied = lines[i];
-      const next = (i + 1) % lines.length;
-      lineCursors[id] = next;
-      nextLabel = `Click to copy line ${next + 1}/${lines.length}`;
-    } else {
-      copied = art;
-    }
-
-    await copyToClipboard(copied);
-
+    await copyToClipboard(art);
     bumpCount(id);
     const badge = card.querySelector('.ta-count-badge');
     if (badge) badge.textContent = formatCount(getCount(id));
-
-    const pill = card.querySelector('[data-line-pill]');
-    if (pill && isMulti) pill.textContent = nextLabel;
-
     card.classList.add('copied');
     clearTimeout(card._t);
     card._t = setTimeout(() => card.classList.remove('copied'), 1100);
