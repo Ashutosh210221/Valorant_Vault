@@ -40,13 +40,20 @@
     </div>
 
     <div class="textart-toolbar">
+      <div class="textart-cats" id="textartCats"></div>
       <div class="textart-search-row">
         <div class="ta-search-wrap">
-          <input type="text" id="textartSearch" class="ta-search-input" placeholder="Search by name or tag..."/>
+          <input type="text" id="textartSearch" class="ta-search-input" placeholder="Search art..."/>
+        </div>
+        <div class="ta-sort-wrap">
+          <label class="ta-sort-label" for="textartSort">Sort by</label>
+          <select id="textartSort" class="ta-sort-select">
+            <option value="latest">Latest</option>
+            <option value="copied">Most Copied</option>
+          </select>
         </div>
         <span class="textart-count" id="textartCount">0 pieces</span>
       </div>
-      <div class="textart-cats" id="textartCats"></div>
     </div>
 
     <div class="textart-grid" id="textartGrid"></div>
