@@ -164,6 +164,32 @@
   justify-content: center;
 }
 
+/* Big block-art pieces: span two grid columns and use a tighter
+   monospace cell so the pixel grid still looks square. */
+.ta-card--big {
+  grid-column: span 2;
+}
+
+.ta-art--big {
+  font-family: 'Consolas', 'Cascadia Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1;
+  letter-spacing: 0;
+  padding: 22px 14px;
+  min-height: 220px;
+  text-align: center;
+  color: #fff;
+}
+
+@media (max-width: 880px) {
+  .ta-card--big { grid-column: span 1; }
+  .ta-art--big { font-size: 0.72rem; }
+}
+
+@media (max-width: 480px) {
+  .ta-art--big { font-size: 0.6rem; padding: 18px 8px; min-height: 180px; }
+}
+
 .ta-art::-webkit-scrollbar { height: 4px; }
 .ta-art::-webkit-scrollbar-thumb { background: rgba(255,70,85,0.4); border-radius: 2px; }
 

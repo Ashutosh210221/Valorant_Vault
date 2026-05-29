@@ -4,6 +4,7 @@
 (function () {
   const CATEGORIES = [
     { id: 'all',       label: 'All' },
+    { id: 'big',       label: 'Block Art' },
     { id: 'gg',        label: 'GG / WP' },
     { id: 'hype',      label: 'Hype' },
     { id: 'wholesome', label: 'Wholesome' },
@@ -61,9 +62,11 @@
       return;
     }
 
-    grid.innerHTML = items.map(item => `
-      <article class="ta-card" data-id="${item.id}">
-        <pre class="ta-art">${escapeHtml(item.art)}</pre>
+    grid.innerHTML = items.map(item => {
+      const isBig = item.category === 'big';
+      return `
+      <article class="ta-card${isBig ? ' ta-card--big' : ''}" data-id="${item.id}">
+        <pre class="ta-art${isBig ? ' ta-art--big' : ''}">${escapeHtml(item.art)}</pre>
         <div class="ta-meta">
           <div class="ta-meta-info">
             <div class="ta-title">${escapeHtml(item.title)}</div>
@@ -74,8 +77,8 @@
             <span class="ta-copy-done">Copied ✓</span>
           </button>
         </div>
-      </article>
-    `).join('');
+      </article>`;
+    }).join('');
 
     grid.querySelectorAll('.ta-copy').forEach(btn => {
       btn.addEventListener('click', async () => {
