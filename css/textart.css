@@ -253,6 +253,28 @@
   pointer-events: none;
 }
 
+/* Multi-line pieces show a small pill that tells you which line
+   you're about to copy. It increments each click so you can paste
+   line-by-line into Valorant chat (which only sends one line per
+   paste). */
+.ta-line-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255,70,85,0.9);
+  border: 1px solid rgba(255,70,85,1);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  pointer-events: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(255,70,85,0.35);
+}
+
 .ta-copy-flash {
   position: absolute;
   inset: 0;
