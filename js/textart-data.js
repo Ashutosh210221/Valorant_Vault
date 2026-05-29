@@ -1,16 +1,16 @@
 /* ============================================================
    Curated Valorant chat text art — designed to actually render
-   in Valorant's chat (which uses a proportional font + filters
-   out the shaded block chars ░ ▓ █).
+   in Valorant's chat (which is monochrome + proportional font).
 
    STRICT RULES used while writing every piece:
    1. Single-line pieces use ONLY plain ASCII + standard emoji.
       No box-drawing chars (╔═║─│) because they don't align with
       letters in the in-game font.
-   2. Multi-line "block art" uses ONLY square color emojis
-      (🟥🟧🟨🟩🟦🟪🟫⬛⬜). The shaded ░▓█ chars get filtered
-      by Valorant chat into diagonal stripes, but emoji squares
-      all render at the same emoji-width so the grid aligns.
+   2. Multi-line "block art" uses only ░ for the background and █
+      for the foreground (the shape). In Valorant chat ░ renders
+      as a DIAGONAL STRIPE pattern and █ renders as SOLID WHITE,
+      giving real contrast — exactly like valoranttextart.com's
+      pixel pieces (Among Us, Valorant Logo, Crab, etc).
    3. Every line stays under ~100 chars (Valorant chat limit
       is ~128, leaving headroom for safety).
    4. Multi-line pieces paste as separate sends — accepted spam
@@ -154,229 +154,230 @@ const TEXTART_DATA = [
   { id: 'force-buy',   title: 'Force Buy',        category: 'valorant', tags: ['force'],
     art: '💪 FORCE BUY 💪 send it' },
 
-  /* ===================== BIG EMOJI ART =====================
-     All pieces below use ONLY square color emojis. Every cell
-     (filled OR background) is a real emoji so it renders at the
-     same emoji-width in Valorant chat. Multi-line spam-pastes
-     as separate sends — one line per message.
+  /* ===================== BIG BLOCK ART =====================
+     All pieces use ░ for background (renders as diagonal stripes
+     in Valorant chat) and █ for foreground (renders as solid
+     white). This gives the classic pixel-art look from
+     valoranttextart.com — bold white shapes on a striped backdrop.
   ====================================================== */
+
+  { id: 'big-among-us', title: 'Among Us',        category: 'big', tags: ['amongus', 'sus', 'crewmate'],
+    art:
+      '░░░░██████░░░░\n' +
+      '░░██░░░░░░██░░\n' +
+      '░██░░████████░\n' +
+      '░██░██████████\n' +
+      '░██░░░░░░░░░██\n' +
+      '░██░░░░░░░░░██\n' +
+      '░██░░░░░░░░░██\n' +
+      '░██░██░░██░██\n' +
+      '░░░██░░░░██░░░' },
+
+  { id: 'big-valorant-v', title: 'Valorant Logo', category: 'big', tags: ['valorant', 'V', 'logo'],
+    art:
+      '██░░░░░░░░░░██\n' +
+      '██░░░░░░░░░░██\n' +
+      '░██░░░░░░░░██░\n' +
+      '░██░░░██░░░██░\n' +
+      '░░██░░██░░██░░\n' +
+      '░░██░░██░░██░░\n' +
+      '░░░██░██░██░░░\n' +
+      '░░░░██░░██░░░░\n' +
+      '░░░░░████░░░░░\n' +
+      '░░░░░░██░░░░░░' },
+
+  { id: 'big-crab',    title: 'Crab',             category: 'big', tags: ['crab', 'animal'],
+    art:
+      '░░░██████░░░██████░░░\n' +
+      '██░░░░░░██████░░░░░██\n' +
+      '██░░██░░░░░░░░██░░░██\n' +
+      '██░██████████████░░██\n' +
+      '░██░░██░██░░██░░██░░\n' +
+      '░░██░░░██░██░░░░██░░░\n' +
+      '░░░██░░░░░░░░░░██░░░░\n' +
+      '░██░░██░░██░░██░░░░░░' },
 
   { id: 'big-skull',   title: 'Skull',            category: 'big', tags: ['skull', 'dead', 'rip'],
     art:
-      '⬛⬜⬜⬜⬜⬜⬛\n' +
-      '⬜⬜⬜⬜⬜⬜⬜\n' +
-      '⬜⬛⬜⬛⬜⬛⬜\n' +
-      '⬜⬜⬜⬜⬜⬜⬜\n' +
-      '⬛⬜⬛⬛⬛⬜⬛\n' +
-      '⬛⬜⬜⬜⬜⬜⬛' },
+      '░░░██████░░░\n' +
+      '░░██░░░░██░░\n' +
+      '░██░░░░░░██░\n' +
+      '░██░██░██░██\n' +
+      '░██░██░██░██\n' +
+      '░██░░░░░░░██\n' +
+      '░██░░████░██\n' +
+      '░░██░░░░░██░\n' +
+      '░░░██████░░░\n' +
+      '░░██░██░██░░\n' +
+      '░░██░██░██░░' },
 
   { id: 'big-heart',   title: 'Heart',            category: 'big', tags: ['heart', 'love'],
     art:
-      '⬛🟥🟥⬛🟥🟥⬛\n' +
-      '🟥🟥🟥🟥🟥🟥🟥\n' +
-      '🟥🟥🟥🟥🟥🟥🟥\n' +
-      '⬛🟥🟥🟥🟥🟥⬛\n' +
-      '⬛⬛🟥🟥🟥⬛⬛\n' +
-      '⬛⬛⬛🟥⬛⬛⬛' },
+      '░██████░░██████░\n' +
+      '████████████████\n' +
+      '████████████████\n' +
+      '████████████████\n' +
+      '░██████████████░\n' +
+      '░░████████████░░\n' +
+      '░░░██████████░░░\n' +
+      '░░░░████████░░░░\n' +
+      '░░░░░██████░░░░░\n' +
+      '░░░░░░████░░░░░░\n' +
+      '░░░░░░░██░░░░░░░' },
 
   { id: 'big-crown',   title: 'Crown',            category: 'big', tags: ['crown', 'mvp'],
     art:
-      '🟨⬛🟨⬛🟨⬛🟨\n' +
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '🟨🟨🟥🟨🟦🟨🟨\n' +
-      '🟨🟨🟨🟨🟨🟨🟨' },
+      '██░░░░██░░░░██\n' +
+      '██░░░░██░░░░██\n' +
+      '████░░██░░████\n' +
+      '██████████████\n' +
+      '██████████████\n' +
+      '██░░██████░░██\n' +
+      '██████████████' },
 
   { id: 'big-spike',   title: 'Spike',            category: 'big', tags: ['spike', 'bomb'],
     art:
-      '⬛⬛🟥⬛⬛\n' +
-      '⬛🟥🟥🟥⬛\n' +
-      '🟥🟥🟨🟥🟥\n' +
-      '🟥🟨🟨🟨🟥\n' +
-      '🟥🟥🟨🟥🟥\n' +
-      '⬛🟥🟥🟥⬛\n' +
-      '⬛⬛🟥⬛⬛' },
+      '░░░██████░░░\n' +
+      '░██░░░░░░██░\n' +
+      '██░░░██░░░██\n' +
+      '██░██████░██\n' +
+      '██░██████░██\n' +
+      '██░░░██░░░██\n' +
+      '░██░░░░░░██░\n' +
+      '░░░██████░░░' },
 
   { id: 'big-sword',   title: 'Sword',            category: 'big', tags: ['sword', 'knife'],
     art:
-      '⬛⬛⬛⬛🟦\n' +
-      '⬛⬛⬛🟦⬛\n' +
-      '⬛⬛🟦⬛⬛\n' +
-      '⬛🟦⬛⬛⬛\n' +
-      '🟦⬛⬛⬛⬛\n' +
-      '🟨🟨🟦⬛⬛\n' +
-      '🟫🟦🟦🟦⬛\n' +
-      '🟦🟫⬛⬛⬛' },
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░░░░░░░██░░\n' +
+      '░░██████████\n' +
+      '░░░░░░██░░░░\n' +
+      '░░░░░░██░░░░\n' +
+      '░░░░░░██░░░░' },
 
-  { id: 'big-arrow-up', title: 'Push Up',         category: 'big', tags: ['push', 'arrow'],
+  { id: 'big-smile',   title: 'Smiley',           category: 'big', tags: ['smile', 'happy'],
     art:
-      '⬛⬛⬛🟩⬛⬛⬛\n' +
-      '⬛⬛🟩🟩🟩⬛⬛\n' +
-      '⬛🟩🟩🟩🟩🟩⬛\n' +
-      '🟩🟩🟩🟩🟩🟩🟩\n' +
-      '⬛⬛⬛🟩⬛⬛⬛\n' +
-      '⬛⬛⬛🟩⬛⬛⬛\n' +
-      '⬛⬛⬛🟩⬛⬛⬛' },
+      '░░░░██████░░░░\n' +
+      '░░██░░░░░░██░░\n' +
+      '░██░██░░██░░██\n' +
+      '░██░██░░██░░██\n' +
+      '░██░░░░░░░░░██\n' +
+      '░██░██░░░░██░██\n' +
+      '░██░░██████░░██\n' +
+      '░░██░░░░░░░░██░\n' +
+      '░░░██░░░░░░██░░\n' +
+      '░░░░░██████░░░░' },
+
+  { id: 'big-gg',      title: 'GG Block',         category: 'big', tags: ['gg', 'win'],
+    art:
+      '░██████░░██████░\n' +
+      '██░░░░██░██░░░░██\n' +
+      '██░░░░░░██░░░░░░\n' +
+      '██░░░░░░██░░░░░░\n' +
+      '██░░████░██░░████\n' +
+      '██░░░░██░██░░░░██\n' +
+      '██░░░░██░██░░░░██\n' +
+      '░██████░░░██████░' },
 
   { id: 'big-l',       title: 'L Block',          category: 'big', tags: ['L', 'trash'],
     art:
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥⬛⬛⬛⬛\n' +
-      '🟥🟥🟥🟥🟥' },
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██░░░░░░░░\n' +
+      '██████████\n' +
+      '██████████' },
 
   { id: 'big-w',       title: 'W Block',          category: 'big', tags: ['W', 'win'],
     art:
-      '🟩⬛⬛⬛⬛⬛🟩\n' +
-      '🟩⬛⬛⬛⬛⬛🟩\n' +
-      '🟩⬛⬛🟩⬛⬛🟩\n' +
-      '🟩⬛🟩🟩🟩⬛🟩\n' +
-      '🟩🟩🟩⬛🟩🟩🟩\n' +
-      '🟩🟩⬛⬛⬛🟩🟩' },
+      '██░░░░░░░░░░░░██\n' +
+      '██░░░░░░░░░░░░██\n' +
+      '██░░░░░░░░░░░░██\n' +
+      '██░░░░██░░░░░░██\n' +
+      '██░░██████░░░░██\n' +
+      '████░░░░░░██░░██\n' +
+      '██░░░░░░░░░░████\n' +
+      '██░░░░░░░░░░░░██' },
 
-  { id: 'big-smile',   title: 'Smile',            category: 'big', tags: ['smile', 'happy'],
+  { id: 'big-star',    title: 'Star',             category: 'big', tags: ['star', 'mvp'],
     art:
-      '⬛🟨🟨🟨🟨🟨⬛\n' +
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '🟨🟨⬛🟨⬛🟨🟨\n' +
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '🟨⬛🟨🟨🟨⬛🟨\n' +
-      '🟨🟨⬛⬛⬛🟨🟨\n' +
-      '⬛🟨🟨🟨🟨🟨⬛' },
-
-  { id: 'big-fire',    title: 'Fire',             category: 'big', tags: ['fire', 'hot'],
-    art:
-      '⬛⬛🟥⬛⬛\n' +
-      '⬛🟥🟧🟥⬛\n' +
-      '🟥🟧🟨🟧🟥\n' +
-      '🟥🟧🟨🟨🟥\n' +
-      '🟥🟧🟨🟧🟥\n' +
-      '⬛🟥🟧🟥⬛\n' +
-      '⬛⬛🟥⬛⬛' },
-
-  { id: 'big-thumbs',  title: 'Thumbs Up',        category: 'big', tags: ['thumbs', 'gj'],
-    art:
-      '⬛⬛🟨🟨⬛⬛\n' +
-      '⬛⬛🟨🟨⬛⬛\n' +
-      '⬛🟨🟨🟨🟨⬛\n' +
-      '🟨🟨🟨🟨🟨🟨\n' +
-      '🟨🟨🟨🟨🟨🟨\n' +
-      '⬛🟨🟨🟨🟨⬛' },
-
-  { id: 'big-peace',   title: 'Peace',            category: 'big', tags: ['peace', 'ggwp'],
-    art:
-      '⬛🟦🟦🟦🟦🟦⬛\n' +
-      '🟦🟦⬜🟦⬜🟦🟦\n' +
-      '🟦🟦⬜🟦⬜🟦🟦\n' +
-      '🟦🟦⬜🟦⬜🟦🟦\n' +
-      '🟦🟦🟦🟦🟦🟦🟦\n' +
-      '⬛🟦🟦🟦🟦🟦⬛' },
-
-  { id: 'big-target',  title: 'Bullseye',         category: 'big', tags: ['target', 'aim'],
-    art:
-      '⬜⬜⬛⬛⬛⬜⬜\n' +
-      '⬜⬛🟥🟥🟥⬛⬜\n' +
-      '⬛🟥🟥🟨🟥🟥⬛\n' +
-      '⬛🟥🟨🟥🟨🟥⬛\n' +
-      '⬛🟥🟥🟨🟥🟥⬛\n' +
-      '⬜⬛🟥🟥🟥⬛⬜\n' +
-      '⬜⬜⬛⬛⬛⬜⬜' },
-
-  { id: 'big-rip',     title: 'RIP Tombstone',    category: 'big', tags: ['rip', 'dead'],
-    art:
-      '⬛🟫🟫🟫🟫🟫⬛\n' +
-      '🟫🟫🟫🟫🟫🟫🟫\n' +
-      '🟫⬜🟫⬜🟫⬜🟫\n' +
-      '🟫⬜🟫⬜🟫⬜🟫\n' +
-      '🟫🟫🟫🟫🟫🟫🟫\n' +
-      '🟫🟫🟫🟫🟫🟫🟫\n' +
-      '🟩🟩🟩🟩🟩🟩🟩' },
-
-  { id: 'big-clown',   title: 'Clown',            category: 'big', tags: ['clown', 'L'],
-    art:
-      '⬛⬛⬛🟥⬛⬛⬛\n' +
-      '⬛🟥🟥🟥🟥🟥⬛\n' +
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '🟨⬛🟨🟨🟨⬛🟨\n' +
-      '🟨🟨🟨🟥🟨🟨🟨\n' +
-      '🟨🟥🟥🟥🟥🟥🟨\n' +
-      '⬛🟨🟨🟨🟨🟨⬛' },
-
-  { id: 'big-pixel-v', title: 'Big V',            category: 'big', tags: ['valorant', 'V'],
-    art:
-      '🟥⬛⬛⬛⬛⬛🟥\n' +
-      '🟥⬛⬛⬛⬛⬛🟥\n' +
-      '⬛🟥⬛⬛⬛🟥⬛\n' +
-      '⬛🟥⬛⬛⬛🟥⬛\n' +
-      '⬛⬛🟥⬛🟥⬛⬛\n' +
-      '⬛⬛🟥⬛🟥⬛⬛\n' +
-      '⬛⬛⬛🟥⬛⬛⬛' },
-
-  { id: 'big-rose',    title: 'Rose',             category: 'big', tags: ['rose', 'love'],
-    art:
-      '⬛🟥🟥🟥🟥⬛\n' +
-      '🟥🟥🟥🟥🟥🟥\n' +
-      '🟥🟥🟥🟥🟥🟥\n' +
-      '⬛🟥🟥🟥🟥⬛\n' +
-      '⬛⬛🟩⬛⬛⬛\n' +
-      '⬛🟩🟩⬛⬛⬛\n' +
-      '⬛⬛🟩⬛⬛⬛\n' +
-      '⬛⬛🟩🟩⬛⬛\n' +
-      '⬛⬛🟩⬛⬛⬛' },
-
-  { id: 'big-cat',     title: 'Cat',              category: 'big', tags: ['cat', 'wholesome'],
-    art:
-      '🟧⬛⬛⬛⬛🟧\n' +
-      '🟧🟧⬛⬛🟧🟧\n' +
-      '🟧🟧🟧🟧🟧🟧\n' +
-      '🟧⬛🟧🟧⬛🟧\n' +
-      '🟧🟧🟧🟧🟧🟧\n' +
-      '🟧🟧🟥🟥🟧🟧\n' +
-      '⬛🟧🟧🟧🟧⬛' },
-
-  { id: 'big-gun',     title: 'Pistol',           category: 'big', tags: ['gun', 'pistol'],
-    art:
-      '⬛⬛⬛⬛⬛⬛⬜⬜⬜\n' +
-      '⬜⬜⬜⬜⬜⬜⬜⬜⬜\n' +
-      '⬜⬛⬛⬛⬛⬛⬛⬛⬜\n' +
-      '⬜⬜⬜⬜⬜⬜⬛⬛⬜\n' +
-      '⬛⬛⬛⬛⬛⬜⬜⬛⬛\n' +
-      '⬛⬛⬛⬛⬛⬛⬛⬛⬛' },
+      '░░░░░██░░░░░\n' +
+      '░░░░████░░░░\n' +
+      '░░░██████░░░\n' +
+      '████████████\n' +
+      '░██████████░\n' +
+      '░░████████░░\n' +
+      '░██░░██░░██░\n' +
+      '██░░░██░░░██' },
 
   { id: 'big-trophy',  title: 'Trophy',           category: 'big', tags: ['trophy', 'win'],
     art:
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '🟨⬛⬛⬛⬛⬛🟨\n' +
-      '🟨⬛⬛⬛⬛⬛🟨\n' +
-      '⬛🟨⬛⬛⬛🟨⬛\n' +
-      '⬛⬛🟨🟨🟨⬛⬛\n' +
-      '⬛⬛⬛🟨⬛⬛⬛\n' +
-      '⬛🟨🟨🟨🟨🟨⬛' },
+      '██████████\n' +
+      '██░░░░░░██\n' +
+      '██░░░░░░██\n' +
+      '░██░░░░██░\n' +
+      '░░██████░░\n' +
+      '░░░░██░░░░\n' +
+      '░░░░██░░░░\n' +
+      '██████████\n' +
+      '██████████' },
 
-  /* Bonus emoji-grid pieces */
-  { id: 'big-star',    title: 'Star',             category: 'big', tags: ['star', 'mvp'],
+  { id: 'big-rip',     title: 'RIP Tombstone',    category: 'big', tags: ['rip', 'dead'],
     art:
-      '⬛⬛⬛🟨⬛⬛⬛\n' +
-      '⬛⬛🟨🟨🟨⬛⬛\n' +
-      '🟨🟨🟨🟨🟨🟨🟨\n' +
-      '⬛🟨🟨🟨🟨🟨⬛\n' +
-      '⬛🟨🟨⬛🟨🟨⬛\n' +
-      '🟨🟨⬛⬛⬛🟨🟨' },
-  { id: 'big-diamond', title: 'Diamond',          category: 'big', tags: ['diamond', 'rank'],
+      '░░██████████░░\n' +
+      '░██░░░░░░░░██░\n' +
+      '██░░██████░░██\n' +
+      '██░██░░░░██░██\n' +
+      '██░░░████░░░██\n' +
+      '██░░░░██░░░░██\n' +
+      '██░░░░██░░░░██\n' +
+      '██░░░░░░░░░░██\n' +
+      '██████████████' },
+
+  { id: 'big-cat',     title: 'Pixel Cat',        category: 'big', tags: ['cat', 'animal'],
     art:
-      '⬛⬛🟦⬛⬛\n' +
-      '⬛🟦🟦🟦⬛\n' +
-      '🟦🟦🟦🟦🟦\n' +
-      '⬛🟦🟦🟦⬛\n' +
-      '⬛⬛🟦⬛⬛' },
-  { id: 'big-lightning', title: 'Lightning',      category: 'big', tags: ['lightning', 'fast'],
+      '██░░░░░░░░░░██\n' +
+      '████░░░░░░████\n' +
+      '██████████████\n' +
+      '██░██░░░░██░██\n' +
+      '██░██░░░░██░██\n' +
+      '██░░░░██░░░░██\n' +
+      '██░██░░░░██░██\n' +
+      '██░░██████░░██\n' +
+      '░██████████░░\n' +
+      '░░██████████░' },
+
+  { id: 'big-fire',    title: 'Fire',             category: 'big', tags: ['fire', 'hot'],
     art:
-      '⬛⬛🟨🟨⬛\n' +
-      '⬛🟨🟨⬛⬛\n' +
-      '🟨🟨🟨🟨⬛\n' +
-      '⬛⬛🟨🟨🟨\n' +
-      '⬛⬛🟨🟨⬛\n' +
-      '⬛🟨🟨⬛⬛' }
+      '░░░░░██░░░░░\n' +
+      '░░░░████░░░░\n' +
+      '░░░██████░░░\n' +
+      '░░██░░░░██░░\n' +
+      '░██░░██░░██░\n' +
+      '██░░████░░██\n' +
+      '██░░████░░██\n' +
+      '██░░░░░░░░██\n' +
+      '░██░░░░░░██░\n' +
+      '░░████████░░' },
+
+  { id: 'big-mushroom', title: 'Mushroom',        category: 'big', tags: ['mushroom', 'cute'],
+    art:
+      '░░░██████████░░░\n' +
+      '░██░░██░░██░░██░\n' +
+      '██░██████████░██\n' +
+      '██░░██░░██░░░░██\n' +
+      '██████████████\n' +
+      '░░░░░████░░░░░░░\n' +
+      '░░░░░████░░░░░░░\n' +
+      '░░░██████████░░░' }
 ];
