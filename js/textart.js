@@ -152,7 +152,12 @@
   async function copyCard(card) {
     const art = decodeURIComponent(card.dataset.art);
     const id = card.dataset.id;
-    await copyToClipboard(art);
+    // Trick valoranttextart.com uses: multi-line art is stored
+    // visually with line breaks for preview, but on copy we join
+    // every row with a single space. Each row is the same width,
+    // so Valorant chat word-wraps it back into a visual pixel grid.
+    const chatText = art.replace(/\n/g, ' ');
+    await copyToClipboard(chatText);
     bumpCount(id);
     const badge = card.querySelector('.ta-count-badge');
     if (badge) badge.textContent = formatCount(getCount(id));

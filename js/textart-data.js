@@ -156,13 +156,31 @@ const TEXTART_DATA = [
     art: '💪 FORCE BUY 💪 send it' },
 
   /* ===================== CARTOON (Pixel Art) =====================
-     Multi-line pixel pieces in the valoranttextart.com cartoon
-     style — Mareep, Among Us, Valorant Logo, Crab, Pacman, Mario
-     etc. Uses the four chat-safe characters:
-       ─ background   █ outline   ▒ inner fill   ░ shadow
-     Click any card to copy the WHOLE piece at once, then paste
-     into Valorant chat.
+     Multi-line pixel pieces in the valoranttextart.com style.
+     KEY TRICK: the art is stored with newlines for browser preview,
+     but on copy every newline is replaced with a single space — so
+     the clipboard ends up with ONE long line that Valorant chat
+     word-wraps back into a visual pixel grid. Every row must be
+     the same character width for the wrapping to work cleanly.
+     Palette: ─ █ ▐ ▌ ▀ ▄ ░ ▒ ▓ ■
   ====================================================== */
+
+  { id: 'cartoon-dont-shoot', title: 'Don’t Shoot!',  category: 'cartoon', tags: ['cartoon', 'meme'],
+    art:
+      '──────────────────────────\n' +
+      '──────────██████──────────\n' +
+      '──▐──────██▀██▀██──────▌──\n' +
+      '─▐▐▐────█▄▄████▄▄█────▌▌▌─\n' +
+      '▐▐▐▐───▐█░■░██░■░█▌───▌▌▌▌\n' +
+      '▐███─▄▌▐█░░░██░░░█▌▐▄─███▌\n' +
+      '▐████▀─▐██████████▌─▀████▌\n' +
+      '▐███───▐██████████▌───███▌\n' +
+      '─███───▐████──████▌───███─\n' +
+      '────────████──████────────\n' +
+      '─────────████████─────────\n' +
+      '──────────▀▀▀▀▀▀──────────\n' +
+      '──────────────────────────' },
+
 
   { id: 'cartoon-mareep',  title: 'Mareep',           category: 'cartoon', tags: ['pokemon', 'mareep', 'sheep'],
     art:
